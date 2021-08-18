@@ -11,21 +11,24 @@ import { useSnackbar } from "notistack";
 import { ChangeEvent, MouseEvent, useEffect, useRef, useState } from "react";
 import FlipMove from "react-flip-move";
 import { AiFillDelete } from "react-icons/ai";
+import modalBody from "./ModalComponent";
 import "./styles.css";
-import ModalComponent from "./ModalComponent";
 
 let todos2: string[] = [];
 
 export default function App() {
-  // Things to do:
-  // Style the modal
-  // Add some editing options to it
-
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [value, setValue] = useState<string>("");
   const [todos, setTodos] = useState<string[]>([]);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [todoContent, setTodoContent] = useState<{
+    todo: string;
+    index: number;
+  }>({
+    todo: "",
+    index: 0,
+  });
 
   useEffect(() => {
     let localStorageTodos = localStorage.getItem("todos");
@@ -89,8 +92,12 @@ export default function App() {
     });
   };
 
-  const handleModalOpen = () => {
+  const handleModalOpen = (todo: string, index: number) => {
     setModalOpen(true);
+    setTodoContent({
+      todo: todo,
+      index: index,
+    });
   };
 
   const handleModalClose = () => {
@@ -98,110 +105,104 @@ export default function App() {
   };
 
   return (
-    <div className="App">
-      <form
-        action=""
-        className="form"
-        style={{
-          marginRight: "20px",
-          marginLeft: "20px",
-          maxWidth: "640px",
-        }}
-      >
-        <TextField
-          id="outlined-basic"
-          label="Enter a Todo"
-          value={value}
-          onChange={onChangeHandler}
-          variant="outlined"
-          fullWidth
+    <>
+      <div className="App">
+        <form
+          action=""
+          className="form"
           style={{
-            margin: "20px",
-            maxWidth: "400px",
-            flexGrow: 1,
+            marginRight: "20px",
+            marginLeft: "20px",
+            maxWidth: "640px",
           }}
-        />
+        >
+          <TextField
+            id="outlined-basic"
+            label="Enter a Todo"
+            value={value}
+            onChange={onChangeHandler}
+            variant="outlined"
+            fullWidth
+            style={{
+              margin: "20px",
+              maxWidth: "400px",
+              flexGrow: 1,
+            }}
+          />
 
-        <Button
-          variant="contained"
-          color="primary"
-          type="submit"
-          style={{
-            marginBottom: "15px",
-            width: "140px",
-          }}
-          onClick={onClickHandler}
-        >
-          Add Todo
-        </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            type="submit"
+            style={{
+              marginBottom: "15px",
+              width: "140px",
+            }}
+            onClick={onClickHandler}
+          >
+            Add Todo
+          </Button>
 
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={clearTodos}
-          type="button"
-          style={{
-            marginBottom: "15px",
-            width: "140px",
-          }}
-        >
-          Clear Todos
-        </Button>
-      </form>
-      <List>
-        <FlipMove
-          style={{
-            width: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexDirection: "column",
-          }}
-          duration={400}
-          leaveAnimation="accordionVertical"
-        >
-          {todos
-            ? todos.map((todo, index) => {
-                return (
-                  <ListItem key={index}>
-                    <ListItemText onClick={handleModalOpen}>
-                      {todo}
-                    </ListItemText>
-                    <ListItemIcon>
-                      <AiFillDelete
-                        className="del"
-                        onClick={(e) => {
-                          deleteHandler(index);
-                        }}
-                      />
-                    </ListItemIcon>
-                    <Modal
-                      open={modalOpen}
-                      onClose={handleModalClose}
-                      aria-labelledby="simple-modal-title"
-                      aria-describedby="simple-modal-description"
-                    >
-                      {/* <ModalComponent
-                        content={todo}
-                        index={index}
-                        todosArray={todos2}
-                      /> */}
-                      <div
-                        style={{
-                          backgroundColor: "white",
-                          color: "black",
-                        }}
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={clearTodos}
+            type="button"
+            style={{
+              marginBottom: "15px",
+              width: "140px",
+            }}
+          >
+            Clear Todos
+          </Button>
+        </form>
+        <List>
+          <FlipMove
+            style={{
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexDirection: "column",
+            }}
+            duration={400}
+            leaveAnimation="accordionVertical"
+          >
+            {todos
+              ? todos.map((todo, index) => {
+                  return (
+                    <ListItem key={index}>
+                      <ListItemText
+                        onClick={() => handleModalOpen(todo, index)}
                       >
                         {todo}
-                        {index}
-                      </div>
-                    </Modal>
-                  </ListItem>
-                );
-              })
-            : null}
-        </FlipMove>
-      </List>
-    </div>
+                      </ListItemText>
+                      <ListItemIcon>
+                        <AiFillDelete
+                          className="del"
+                          onClick={(e) => {
+                            deleteHandler(index);
+                          }}
+                        />
+                      </ListItemIcon>
+                    </ListItem>
+                  );
+                })
+              : null}
+          </FlipMove>
+        </List>
+      </div>
+      <Modal
+        open={modalOpen}
+        onClose={handleModalClose}
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+      >
+        {modalBody({
+          todoState: todoContent,
+          todosArray: todos2,
+        })}
+      </Modal>
+    </>
   );
 }

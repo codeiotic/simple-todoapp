@@ -7,23 +7,24 @@ import {
   Theme,
 } from "@material-ui/core";
 import { useSnackbar } from "notistack";
-import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 
 interface ModalComponentProps {
-  content: string;
-  index: number;
+  todoState: {
+    todo: string;
+    index: number;
+  };
   todosArray: string[];
-  // modalOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-const ModalComponent = ({
-  content,
-  index,
-  todosArray,
-}: ModalComponentProps) => {
-  const [value, setValue] = useState<string>(content);
+const modalBody = ({ todoState, todosArray }: ModalComponentProps) => {
+  const [value, setValue] = useState<string>(todoState.todo);
   const [disabled, setDisabled] = useState<boolean>(true);
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
+  useEffect(() => {
+    setValue(todoState.todo);
+  }, [todoState.todo]);
 
   const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -53,24 +54,11 @@ const ModalComponent = ({
 
   const classes = useStyles();
 
-  const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    setValue(e.target.value);
-    let inputVal = e.target.value;
-    if (inputVal.trim() !== "" && inputVal.trim() !== content) {
-      setDisabled(false);
-    } else if (inputVal.trim() === content) {
-      setDisabled(true);
-    } else {
-      setDisabled(false);
-    }
-  };
-
   const changeTodo = () => {
-    todosArray.forEach((todo, indexNum, arr) => {
-      if (indexNum === index) {
-        todosArray[index] = value;
+    todosArray.forEach((_, indexNum, __) => {
+      if (indexNum === todoState.index) {
+        todosArray[todoState.index] = value;
         localStorage.setItem("todos", JSON.stringify(todosArray));
-        // modalOpen(false);
         enqueueSnackbar("Todo successfully changed", {
           variant: "success",
         });
@@ -78,9 +66,21 @@ const ModalComponent = ({
     });
   };
 
+  const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+    setValue(e.target.value);
+    let inputVal = e.target.value;
+
+    if (inputVal.trim() !== "" && inputVal.trim() !== todoState.todo) {
+      setDisabled(false);
+    } else if (inputVal.trim() === todoState.todo) {
+      setDisabled(true);
+    } else {
+      setDisabled(true);
+    }
+  };
   return (
     <div
-      key={index}
+      key={todoState.index}
       className={classes.paper}
       style={{
         top: "50%",
@@ -100,6 +100,7 @@ const ModalComponent = ({
         }}
       />
       <TextField
+        autoComplete="off"
         id="standard-basic"
         label="Standard"
         value={value}
@@ -132,4 +133,4 @@ const ModalComponent = ({
   );
 };
 
-export default ModalComponent;
+export default modalBody;
