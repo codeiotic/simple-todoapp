@@ -1,0 +1,124 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.App {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+}
+
+.input {
+  margin-top: 20px;
+  width: 80%;
+  outline: none;
+  border: 1px solid blue;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  padding: 10px;
+  max-width: 500px;
+  min-width: 200px;
+}
+
+.btn {
+  width: 13%;
+  height: 30px;
+  background-color: skyblue;
+  border: none;
+  outline: none;
+  border-radius: 5px;
+  border: 1px solid blue;
+  transition: all 0.1s ease-in-out;
+  font-size: 0.9rem;
+  text-align: center;
+  cursor: pointer;
+  min-width: 85px;
+}
+
+.btn:last-child {
+  margin-bottom: 20px;
+}
+
+.btn:hover {
+  background-color: deepskyblue;
+}
+
+.btn:active {
+  border: 2px solid blue;
+  transform: scale(1.01);
+}
+
+ul {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 60%;
+  font-size: 1.1rem;
+}
+
+li:first-child {
+  border-top: 1px solid black;
+}
+
+li {
+  border-radius: 5px;
+  list-style-type: none;
+  border-bottom: 1px solid black;
+  border-right: 1px solid black;
+  border-left: 1px solid black;
+  width: 80%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: fit-content;
+  padding: 15px;
+  padding-left: 0px;
+  cursor: pointer;
+  min-width: 200px;
+}
+
+.del {
+  display: none !important;
+  /* min-width: 20px; */
+  /* min-height: 20px; */
+  font-size: 19px !important;
+  cursor: pointer !important;
+  /* margin-right: 20px; */
+  margin-left: 20px;
+  color: red;
+}
+
+@media screen and (max-width: 882px) {
+  .del {
+    transition: all 0.3s ease-in-out;
+    margin-right: 0;
+    font-size: 20px !important;
+  }
+  li {
+    transition: all 0.3s ease-in-out;
+  }
+}
+
+li:hover .del {
+  display: flex !important;
+}
+
+.del:hover {
+  color: darkred;
+}
+
+/* span {
+  margin-left: 20px;
+} */
