@@ -201,6 +201,7 @@ export default function App() {
         {modalBody({
           todoState: todoContent,
           todosArray: todos2,
+          modalOpenBoolean: setModalOpen,
         })}
       </Modal>
     </>

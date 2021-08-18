@@ -7,7 +7,13 @@ import {
   Theme,
 } from "@material-ui/core";
 import { useSnackbar } from "notistack";
-import { ChangeEvent, useEffect, useState } from "react";
+import {
+  ChangeEvent,
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 
 interface ModalComponentProps {
   todoState: {
@@ -15,9 +21,14 @@ interface ModalComponentProps {
     index: number;
   };
   todosArray: string[];
+  modalOpenBoolean: Dispatch<SetStateAction<boolean>>;
 }
 
-const modalBody = ({ todoState, todosArray }: ModalComponentProps) => {
+const modalBody = ({
+  todoState,
+  todosArray,
+  modalOpenBoolean,
+}: ModalComponentProps) => {
   const [value, setValue] = useState<string>(todoState.todo);
   const [disabled, setDisabled] = useState<boolean>(true);
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -64,6 +75,7 @@ const modalBody = ({ todoState, todosArray }: ModalComponentProps) => {
         });
       }
     });
+    modalOpenBoolean(false);
   };
 
   const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
