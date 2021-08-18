@@ -5,7 +5,7 @@ import {
   ListItemIcon,
   ListItemText,
   Modal,
-  TextField
+  TextField,
 } from "@material-ui/core";
 import { useSnackbar } from "notistack";
 import { ChangeEvent, MouseEvent, useEffect, useRef, useState } from "react";
@@ -57,11 +57,11 @@ export default function App() {
       localStorage.setItem("todos", JSON.stringify(todos2));
       setValue("");
       enqueueSnackbar("Todo created!", {
-        variant: "success"
+        variant: "success",
       });
     } else {
       enqueueSnackbar("Please enter text to add a Todo", {
-        variant: "error"
+        variant: "error",
       });
     }
   };
@@ -72,7 +72,7 @@ export default function App() {
     todos2 = [];
     setTodos([]);
     enqueueSnackbar("Cleared all Todos", {
-      variant: "success"
+      variant: "success",
     });
   };
 
@@ -85,7 +85,7 @@ export default function App() {
       setTodos(newTodoArray);
     }
     enqueueSnackbar("Cleared Todo", {
-      variant: "success"
+      variant: "success",
     });
   };
 
@@ -105,8 +105,9 @@ export default function App() {
         style={{
           marginRight: "20px",
           marginLeft: "20px",
-          maxWidth: "640px"
-        }}>
+          maxWidth: "640px",
+        }}
+      >
         <TextField
           id="outlined-basic"
           label="Enter a Todo"
@@ -117,7 +118,7 @@ export default function App() {
           style={{
             margin: "20px",
             maxWidth: "400px",
-            flexGrow: 1
+            flexGrow: 1,
           }}
         />
 
@@ -127,9 +128,10 @@ export default function App() {
           type="submit"
           style={{
             marginBottom: "15px",
-            width: "140px"
+            width: "140px",
           }}
-          onClick={onClickHandler}>
+          onClick={onClickHandler}
+        >
           Add Todo
         </Button>
 
@@ -140,8 +142,9 @@ export default function App() {
           type="button"
           style={{
             marginBottom: "15px",
-            width: "140px"
-          }}>
+            width: "140px",
+          }}
+        >
           Clear Todos
         </Button>
       </form>
@@ -152,10 +155,11 @@ export default function App() {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            flexDirection: "column"
+            flexDirection: "column",
           }}
           duration={400}
-          leaveAnimation="accordionVertical">
+          leaveAnimation="accordionVertical"
+        >
           {todos
             ? todos.map((todo, index) => {
                 return (
@@ -175,7 +179,8 @@ export default function App() {
                       open={modalOpen}
                       onClose={handleModalClose}
                       aria-labelledby="simple-modal-title"
-                      aria-describedby="simple-modal-description">
+                      aria-describedby="simple-modal-description"
+                    >
                       {/* <ModalComponent
                         content={todo}
                         index={index}
@@ -184,8 +189,9 @@ export default function App() {
                       <div
                         style={{
                           backgroundColor: "white",
-                          color: "black"
-                        }}>
+                          color: "black",
+                        }}
+                      >
                         {todo}
                         {index}
                       </div>

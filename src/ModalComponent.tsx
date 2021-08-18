@@ -4,7 +4,7 @@ import {
   Divider,
   makeStyles,
   TextField,
-  Theme
+  Theme,
 } from "@material-ui/core";
 import { useSnackbar } from "notistack";
 import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
@@ -19,9 +19,8 @@ interface ModalComponentProps {
 const ModalComponent = ({
   content,
   index,
-  todosArray
-}: // modalOpen
-ModalComponentProps) => {
+  todosArray,
+}: ModalComponentProps) => {
   const [value, setValue] = useState<string>(content);
   const [disabled, setDisabled] = useState<boolean>(true);
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -39,7 +38,7 @@ ModalComponentProps) => {
         alignItems: "center",
         justifyContent: "center",
         flexDirection: "column",
-        fontFamily: "Roboto"
+        fontFamily: "Roboto",
       },
       heading: {},
       headingContainer: {
@@ -47,8 +46,8 @@ ModalComponentProps) => {
         alignItems: "center",
         justifyContent: "flex-start",
         width: "100%",
-        fontSize: "12px"
-      }
+        fontSize: "12px",
+      },
     })
   );
 
@@ -73,7 +72,7 @@ ModalComponentProps) => {
         localStorage.setItem("todos", JSON.stringify(todosArray));
         // modalOpen(false);
         enqueueSnackbar("Todo successfully changed", {
-          variant: "success"
+          variant: "success",
         });
       }
     });
@@ -86,8 +85,9 @@ ModalComponentProps) => {
       style={{
         top: "50%",
         left: "50%",
-        transform: "translate(-50%, -50%)"
-      }}>
+        transform: "translate(-50%, -50%)",
+      }}
+    >
       <div className={classes.headingContainer}>
         <h2>Edit Todo</h2>
       </div>
@@ -96,7 +96,7 @@ ModalComponentProps) => {
           marginTop: "15px",
           marginBottom: "15px",
           width: "100%",
-          backgroundColor: "black"
+          backgroundColor: "black",
         }}
       />
       <TextField
@@ -105,7 +105,7 @@ ModalComponentProps) => {
         value={value}
         onChange={onChangeHandler}
         style={{
-          width: "100%"
+          width: "100%",
         }}
       />
       <div
@@ -113,16 +113,18 @@ ModalComponentProps) => {
           display: "flex",
           alignItems: "center",
           justifyContent: "flex-start",
-          width: "100%"
-        }}>
+          width: "100%",
+        }}
+      >
         <Button
           variant="contained"
           color="primary"
           onClick={changeTodo}
           style={{
-            marginTop: "20px"
+            marginTop: "20px",
           }}
-          disabled={disabled}>
+          disabled={disabled}
+        >
           Change Todo
         </Button>
       </div>
