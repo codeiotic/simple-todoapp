@@ -125,8 +125,8 @@ export default function App() {
             fullWidth
             style={{
               margin: "20px",
-              maxWidth: "400px",
-              flexGrow: 1,
+              maxWidth: "90%",
+              minWidth: "50%",
             }}
           />
 
@@ -137,6 +137,8 @@ export default function App() {
             style={{
               marginBottom: "15px",
               width: "140px",
+              maxWidth: "32%",
+              minWidth: "32%",
             }}
             onClick={onClickHandler}
           >
@@ -151,12 +153,18 @@ export default function App() {
             style={{
               marginBottom: "15px",
               width: "140px",
+              maxWidth: "34%",
+              minWidth: "32%",
             }}
           >
             Clear Todos
           </Button>
         </form>
-        <List>
+        <List
+          style={{
+            margin: "20px",
+          }}
+        >
           <FlipMove
             style={{
               width: "100%",
