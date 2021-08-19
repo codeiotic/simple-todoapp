@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 
 function useLocalStorage() {
+  // We might also add the notifications function here only to simplify the code.
+
   const [todosArray, setTodos] = useState<string[]>([]);
   let todos: string[] = todosArray;
   let localStorageTodos = localStorage.getItem("todos");
@@ -35,9 +37,14 @@ function useLocalStorage() {
   };
 
   const deleteTodo = (index: number) => {
-    let newArr = todos.splice(index, 1);
-    setTodos(newArr);
+    // There might be a nice way to do this!
+
+    todos.splice(index, 1);
     localStorage.setItem("todos", JSON.stringify(todos));
+    let newArr = localStorage.getItem("todos");
+    if (newArr) {
+      setTodos(JSON.parse(newArr));
+    }
   };
 
   return { todosArray, clearTodos, addTodo, deleteTodo };
