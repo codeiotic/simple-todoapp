@@ -37,8 +37,7 @@ function useLocalStorage() {
   };
 
   const deleteTodo = (index: number) => {
-    // There might be a nice way to do this!
-
+    // There might be a better way to do this!
     todos.splice(index, 1);
     localStorage.setItem("todos", JSON.stringify(todos));
     let newArr = localStorage.getItem("todos");
@@ -47,7 +46,13 @@ function useLocalStorage() {
     }
   };
 
-  return { todosArray, clearTodos, addTodo, deleteTodo };
+  const updateTodo = (content: string, index: number) => {
+    todos[index] = content;
+    localStorage.setItem("todos", JSON.stringify(todos));
+    setTodos(todos);
+  };
+
+  return { todosArray, clearTodos, addTodo, deleteTodo, updateTodo };
 }
 
 export default useLocalStorage;

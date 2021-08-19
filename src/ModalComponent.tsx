@@ -14,6 +14,7 @@ import {
   useEffect,
   useState,
 } from "react";
+import useLocalStorage from "./hooks/useLocalStorage";
 
 interface ModalComponentProps {
   todoState: {
@@ -22,20 +23,28 @@ interface ModalComponentProps {
   };
   todosArray: string[];
   modalOpenBoolean: Dispatch<SetStateAction<boolean>>;
+  modalOpenBooleanValue: boolean;
 }
 
 const modalBody = ({
   todoState,
   todosArray,
   modalOpenBoolean,
-}: ModalComponentProps) => {
+  modalOpenBooleanValue,
+}: ModalComponentProps): JSX.Element => {
   const [value, setValue] = useState<string>(todoState.todo);
   const [disabled, setDisabled] = useState<boolean>(true);
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  let { deleteTodo, updateTodo } = useLocalStorage();
 
   useEffect(() => {
     setValue(todoState.todo);
   }, [todoState.todo]);
+
+  useEffect(() => {
+    setValue(todoState.todo);
+    setDisabled(true);
+  }, [modalOpenBooleanValue]);
 
   const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -52,7 +61,6 @@ const modalBody = ({
         flexDirection: "column",
         fontFamily: "Roboto",
       },
-      heading: {},
       headingContainer: {
         display: "flex",
         alignItems: "center",
@@ -66,14 +74,9 @@ const modalBody = ({
   const classes = useStyles();
 
   const changeTodo = () => {
-    todosArray.forEach((_, indexNum, __) => {
-      if (indexNum === todoState.index) {
-        todosArray[todoState.index] = value;
-        localStorage.setItem("todos", JSON.stringify(todosArray));
-        enqueueSnackbar("Todo successfully changed", {
-          variant: "success",
-        });
-      }
+    updateTodo(value, todoState.index);
+    enqueueSnackbar("Todo successfully changed", {
+      variant: "success",
     });
     modalOpenBoolean(false);
   };
@@ -86,10 +89,21 @@ const modalBody = ({
       setDisabled(false);
     } else if (inputVal.trim() === todoState.todo) {
       setDisabled(true);
+    } else if (value.trim() === todoState.todo) {
+      setDisabled(true);
     } else {
       setDisabled(true);
     }
   };
+
+  const deleteTodoHandler = () => {
+    deleteTodo(todoState.index);
+    enqueueSnackbar("Todo deleted", {
+      variant: "error",
+    });
+    modalOpenBoolean(false);
+  };
+
   return (
     <div
       key={todoState.index}
@@ -139,6 +153,17 @@ const modalBody = ({
           disabled={disabled}
         >
           Change Todo
+        </Button>
+        <Button
+          variant="contained"
+          color="secondary"
+          style={{
+            marginTop: "20px",
+            marginLeft: "20px",
+          }}
+          onClick={deleteTodoHandler}
+        >
+          Delete Todo
         </Button>
       </div>
     </div>
