@@ -8,18 +8,16 @@ import {
   TextField,
 } from "@material-ui/core";
 import { useSnackbar } from "notistack";
-import { ChangeEvent, MouseEvent, useEffect, useRef, useState } from "react";
+import { ChangeEvent, MouseEvent, useRef, useState } from "react";
 import FlipMove from "react-flip-move";
 import { AiFillDelete } from "react-icons/ai";
+import useLocalStorage from "./hooks/useLocalStorage";
 import modalBody from "./ModalComponent";
 import "./styles.css";
-
-let todos2: string[] = [];
 
 export default function App() {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [value, setValue] = useState<string>("");
-  const [todos, setTodos] = useState<string[]>([]);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [todoContent, setTodoContent] = useState<{
@@ -30,66 +28,51 @@ export default function App() {
     index: 0,
   });
 
-  useEffect(() => {
-    let localStorageTodos = localStorage.getItem("todos");
-    if (localStorageTodos) {
-      let localStorageTodosArray: string[] = JSON.parse(localStorageTodos);
-      localStorageTodosArray.map((localStorageTodo: string, index: number) => {
-        todos2.push(localStorageTodo);
-        setTodos(todos2);
-      });
-    }
-  }, []);
+  let { todosArray, clearTodos, addTodo, deleteTodo } = useLocalStorage();
 
   const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
   };
 
-  const onClickHandler = (e: MouseEvent<HTMLButtonElement>) => {
+  const addTodoHandler = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     inputRef.current?.blur();
     if (value.trim().length >= 30) {
-      alert("Please enter todos which are less than 30 letters");
+      enqueueSnackbar("Please enter todos which are less than 30 letters", {
+        variant: "warning",
+      });
       setValue("");
       inputRef.current?.blur();
       return;
     }
     if (value.trim()) {
-      todos2.push(value);
-      setTodos(todos2);
-      localStorage.setItem("todos", JSON.stringify(todos2));
+      addTodo(value);
       setValue("");
       enqueueSnackbar("Todo created!", {
         variant: "success",
       });
     } else {
       enqueueSnackbar("Please enter text to add a Todo", {
-        variant: "error",
+        variant: "warning",
       });
     }
   };
 
-  const clearTodos = (e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    localStorage.removeItem("todos");
-    todos2 = [];
-    setTodos([]);
-    enqueueSnackbar("Cleared all Todos", {
-      variant: "success",
-    });
+  const clearTodosHandler = () => {
+    if (todosArray.length === 0) {
+      enqueueSnackbar("No todos to clear", {
+        variant: "warning",
+      });
+    } else {
+      clearTodos();
+      enqueueSnackbar("Cleared all Todos", {
+        variant: "success",
+      });
+    }
   };
 
   const deleteHandler = (index: number) => {
-    todos2.splice(index, 1);
-    localStorage.setItem("todos", JSON.stringify(todos2));
-    let localStorageTodo = localStorage.getItem("todos");
-    if (localStorageTodo) {
-      let newTodoArray = JSON.parse(localStorageTodo);
-      setTodos(newTodoArray);
-    }
-    enqueueSnackbar("Cleared Todo", {
-      variant: "success",
-    });
+    deleteTodo(index);
   };
 
   const handleModalOpen = (todo: string, index: number) => {
@@ -140,7 +123,7 @@ export default function App() {
               maxWidth: "32%",
               minWidth: "32%",
             }}
-            onClick={onClickHandler}
+            onClick={addTodoHandler}
           >
             Add Todo
           </Button>
@@ -148,7 +131,7 @@ export default function App() {
           <Button
             variant="contained"
             color="secondary"
-            onClick={clearTodos}
+            onClick={clearTodosHandler}
             type="button"
             style={{
               marginBottom: "15px",
@@ -176,8 +159,8 @@ export default function App() {
             duration={400}
             leaveAnimation="accordionVertical"
           >
-            {todos
-              ? todos.map((todo, index) => {
+            {todosArray
+              ? todosArray.map((todo, index) => {
                   return (
                     <ListItem key={index}>
                       <ListItemText
@@ -188,7 +171,7 @@ export default function App() {
                       <ListItemIcon>
                         <AiFillDelete
                           className="del"
-                          onClick={(e) => {
+                          onClick={() => {
                             deleteHandler(index);
                           }}
                         />
@@ -208,7 +191,7 @@ export default function App() {
       >
         {modalBody({
           todoState: todoContent,
-          todosArray: todos2,
+          todosArray: todosArray,
           modalOpenBoolean: setModalOpen,
         })}
       </Modal>
