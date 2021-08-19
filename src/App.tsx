@@ -1,5 +1,7 @@
 import {
+  Backdrop,
   Button,
+  Fade,
   List,
   ListItem,
   ListItemIcon,
@@ -188,12 +190,20 @@ export default function App() {
         onClose={handleModalClose}
         aria-labelledby="simple-modal-title"
         aria-describedby="simple-modal-description"
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
       >
-        {modalBody({
-          todoState: todoContent,
-          todosArray: todosArray,
-          modalOpenBoolean: setModalOpen,
-        })}
+        <Fade in={modalOpen}>
+          {modalBody({
+            todoState: todoContent,
+            todosArray: todosArray,
+            modalOpenBoolean: setModalOpen,
+            modalOpenBooleanValue: modalOpen,
+          })}
+        </Fade>
       </Modal>
     </>
   );
