@@ -9,15 +9,24 @@ import {
   Modal,
   TextField,
 } from "@material-ui/core";
+import {
+  DragDropContext,
+  Draggable,
+  Droppable,
+  DropResult,
+} from "react-beautiful-dnd";
 import { useSnackbar } from "notistack";
 import { ChangeEvent, MouseEvent, useRef, useState } from "react";
 import FlipMove from "react-flip-move";
 import { AiFillDelete } from "react-icons/ai";
 import useLocalStorage from "./hooks/useLocalStorage";
-import modalBody from "./ModalComponent";
 import "./styles.css";
+import modalBody from "./ModalComponent";
 
 export default function App() {
+  // Some bugs regarding the `id` of each todo, when a todo updates itself
+  // Kinda sad :(
+
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [value, setValue] = useState<string>("");
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -30,7 +39,8 @@ export default function App() {
     index: 0,
   });
 
-  let { todosArray, clearTodos, addTodo, deleteTodo } = useLocalStorage();
+  let { todosArray, clearTodos, addTodo, deleteTodo, setTodos, updateTodo } =
+    useLocalStorage();
 
   const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
@@ -48,7 +58,10 @@ export default function App() {
       return;
     }
     if (value.trim()) {
-      addTodo(value);
+      addTodo({
+        id: todosArray.length + 1,
+        todos: value,
+      });
       setValue("");
       enqueueSnackbar("Todo created!", {
         variant: "success",
@@ -87,6 +100,14 @@ export default function App() {
 
   const handleModalClose = () => {
     setModalOpen(false);
+  };
+
+  const handleDragEnd = (result: DropResult) => {
+    if (!result.destination) return;
+    let items = Array.from(todosArray);
+    let [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+    updateTodo({ newTodosArr: items });
   };
 
   return (
@@ -145,45 +166,61 @@ export default function App() {
             Clear Todos
           </Button>
         </form>
-        <List
-          style={{
-            margin: "20px",
-          }}
-        >
-          <FlipMove
-            style={{
-              width: "100%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexDirection: "column",
-            }}
-            duration={400}
-            leaveAnimation="accordionVertical"
-          >
-            {todosArray
-              ? todosArray.map((todo, index) => {
+        <DragDropContext onDragEnd={handleDragEnd}>
+          <Droppable droppableId="todos">
+            {(provided) => (
+              <List
+                className="todos"
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+                style={{
+                  margin: "20px",
+                }}
+              >
+                {/* <FlipMove
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexDirection: "column",
+                  }}
+                  duration={400}
+                  leaveAnimation="accordionVertical"
+                > */}
+                {todosArray.map(({ todos, id }, index) => {
                   return (
-                    <ListItem key={index}>
-                      <ListItemText
-                        onClick={() => handleModalOpen(todo, index)}
-                      >
-                        {todo}
-                      </ListItemText>
-                      <ListItemIcon>
-                        <AiFillDelete
-                          className="del"
-                          onClick={() => {
-                            deleteHandler(index);
-                          }}
-                        />
-                      </ListItemIcon>
-                    </ListItem>
+                    <Draggable draggableId={String(id)} index={index} key={id}>
+                      {(provided, snapshot) => (
+                        <ListItem
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                        >
+                          <ListItemText
+                            onClick={() => handleModalOpen(todos, index)}
+                          >
+                            {todos}
+                          </ListItemText>
+                          <ListItemIcon>
+                            <AiFillDelete
+                              className="del"
+                              onClick={() => {
+                                deleteHandler(index);
+                              }}
+                            />
+                          </ListItemIcon>
+                        </ListItem>
+                      )}
+                    </Draggable>
                   );
-                })
-              : null}
-          </FlipMove>
-        </List>
+                })}
+                {/* </FlipMove> */}
+                {provided.placeholder}
+              </List>
+            )}
+          </Droppable>
+        </DragDropContext>
       </div>
       <Modal
         open={modalOpen}

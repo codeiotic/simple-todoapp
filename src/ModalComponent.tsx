@@ -16,12 +16,16 @@ import {
 } from "react";
 import useLocalStorage from "./hooks/useLocalStorage";
 
+interface TodosSchema {
+  id: number;
+  todos: string;
+}
 interface ModalComponentProps {
   todoState: {
     todo: string;
     index: number;
   };
-  todosArray: string[];
+  todosArray: TodosSchema[];
   modalOpenBoolean: Dispatch<SetStateAction<boolean>>;
   modalOpenBooleanValue: boolean;
 }
@@ -74,7 +78,17 @@ const modalBody = ({
   const classes = useStyles();
 
   const changeTodo = () => {
-    updateTodo(value, todoState.index);
+    todosArray.map(({ id, todos }, index) => {
+      if (id - 1 === todoState.index) {
+        updateTodo({
+          content: {
+            id: id,
+            todos: value,
+          },
+          index: id - 1,
+        });
+      }
+    });
     enqueueSnackbar("Todo successfully changed", {
       variant: "success",
     });
