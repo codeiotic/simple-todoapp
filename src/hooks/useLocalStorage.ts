@@ -1,10 +1,15 @@
 import { useEffect, useState } from "react";
 
 function useLocalStorage() {
+  interface TodosSchema {
+    id: number;
+    todos: string;
+  }
+
   // We might also add the notifications function here only to simplify the code.
 
-  const [todosArray, setTodos] = useState<string[]>([]);
-  let todos: string[] = todosArray;
+  const [todosArray, setTodos] = useState<TodosSchema[]>([]);
+  let todos: TodosSchema[] = todosArray;
   let localStorageTodos = localStorage.getItem("todos");
 
   useEffect(() => {
@@ -13,6 +18,10 @@ function useLocalStorage() {
       todos = JSON.parse(localStorageTodos);
     }
   }, [localStorageTodos]);
+
+  useEffect(() => {
+    todos = todosArray;
+  }, [todosArray]);
 
   const clearTodos = (index?: number) => {
     if (index) {
@@ -24,7 +33,7 @@ function useLocalStorage() {
     }
   };
 
-  const addTodo = (value: string, index?: number) => {
+  const addTodo = (value: TodosSchema, index?: number) => {
     if (index) {
       todos?.splice(index, 1, value);
       setTodos(todos);
@@ -46,13 +55,23 @@ function useLocalStorage() {
     }
   };
 
-  const updateTodo = (content: string, index: number) => {
-    todos[index] = content;
+  interface UpdateTodoProps {
+    newTodosArr?: TodosSchema[];
+    content?: TodosSchema;
+    index?: number;
+  }
+
+  const updateTodo = ({ newTodosArr, content, index }: UpdateTodoProps) => {
+    if (content) {
+      todos[index].todos = content.todos;
+    } else {
+      todos = newTodosArr;
+    }
     localStorage.setItem("todos", JSON.stringify(todos));
     setTodos(todos);
   };
 
-  return { todosArray, clearTodos, addTodo, deleteTodo, updateTodo };
+  return { todosArray, clearTodos, addTodo, deleteTodo, updateTodo, setTodos };
 }
 
 export default useLocalStorage;
