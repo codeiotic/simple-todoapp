@@ -17,15 +17,13 @@ import {
 } from "react-beautiful-dnd";
 import { useSnackbar } from "notistack";
 import { ChangeEvent, MouseEvent, useRef, useState } from "react";
-import FlipMove from "react-flip-move";
 import { AiFillDelete } from "react-icons/ai";
 import useLocalStorage from "./hooks/useLocalStorage";
 import "./styles.css";
 import modalBody from "./ModalComponent";
 
 export default function App() {
-  // Some bugs regarding the `id` of each todo, when a todo updates itself
-  // Kinda sad :(
+  // TODO: Look into the animations for the lists
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [value, setValue] = useState<string>("");
@@ -177,17 +175,6 @@ export default function App() {
                   margin: "20px",
                 }}
               >
-                {/* <FlipMove
-                  style={{
-                    width: "100%",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flexDirection: "column",
-                  }}
-                  duration={400}
-                  leaveAnimation="accordionVertical"
-                > */}
                 {todosArray.map(({ todos, id }, index) => {
                   return (
                     <Draggable draggableId={String(id)} index={index} key={id}>
@@ -215,7 +202,6 @@ export default function App() {
                     </Draggable>
                   );
                 })}
-                {/* </FlipMove> */}
                 {provided.placeholder}
               </List>
             )}

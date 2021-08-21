@@ -78,17 +78,27 @@ const modalBody = ({
   const classes = useStyles();
 
   const changeTodo = () => {
-    todosArray.map(({ id, todos }, index) => {
+    let localTodosArray = todosArray;
+    localTodosArray.sort((a, b) => {
+      return a.id - b.id;
+    });
+
+    localTodosArray.map(({ id, todos }, index) => {
+      console.log([id, index, todoState.index]);
       if (id - 1 === todoState.index) {
         updateTodo({
           content: {
-            id: id,
+            // The id is not necessarily needed, but removing it will give some type errors
+            // Will remove it in future commits
+            // But for now it works like a charm :)
+            id: todoState.index,
             todos: value,
           },
           index: id - 1,
         });
       }
     });
+
     enqueueSnackbar("Todo successfully changed", {
       variant: "success",
     });

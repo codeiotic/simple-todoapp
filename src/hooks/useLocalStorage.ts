@@ -62,8 +62,8 @@ function useLocalStorage() {
   }
 
   const updateTodo = ({ newTodosArr, content, index }: UpdateTodoProps) => {
-    if (index && content) {
-      todos[index] = content;
+    if (content) {
+      todos[index].todos = content.todos;
     } else {
       todos = newTodosArr;
     }
