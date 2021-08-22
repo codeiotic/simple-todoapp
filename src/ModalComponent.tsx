@@ -1,11 +1,4 @@
-import {
-  Button,
-  createStyles,
-  Divider,
-  makeStyles,
-  TextField,
-  Theme,
-} from "@material-ui/core";
+import { Button, Divider, TextField } from "@material-ui/core";
 import { useSnackbar } from "notistack";
 import {
   ChangeEvent,
@@ -15,6 +8,7 @@ import {
   useState,
 } from "react";
 import useLocalStorage from "./hooks/useLocalStorage";
+import modalStyles from "./styles/Modal";
 
 interface TodosSchema {
   id: number;
@@ -36,6 +30,7 @@ const modalBody = ({
   modalOpenBoolean,
   modalOpenBooleanValue,
 }: ModalComponentProps): JSX.Element => {
+  const classes = modalStyles();
   const [value, setValue] = useState<string>(todoState.todo);
   const [disabled, setDisabled] = useState<boolean>(true);
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -49,33 +44,6 @@ const modalBody = ({
     setValue(todoState.todo);
     setDisabled(true);
   }, [modalOpenBooleanValue]);
-
-  const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-      paper: {
-        position: "absolute",
-        width: 400,
-        backgroundColor: theme.palette.background.paper,
-        boxShadow: theme.shadows[4],
-        padding: theme.spacing(2, 4, 3),
-        outline: "none",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        flexDirection: "column",
-        fontFamily: "Roboto",
-      },
-      headingContainer: {
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "flex-start",
-        width: "100%",
-        fontSize: "12px",
-      },
-    })
-  );
-
-  const classes = useStyles();
 
   const changeTodo = () => {
     let localTodosArray = todosArray;
@@ -101,6 +69,7 @@ const modalBody = ({
 
     enqueueSnackbar("Todo successfully changed", {
       variant: "success",
+      autoHideDuration: 2000,
     });
     modalOpenBoolean(false);
   };
@@ -124,6 +93,7 @@ const modalBody = ({
     deleteTodo(todoState.index);
     enqueueSnackbar("Todo deleted", {
       variant: "error",
+      autoHideDuration: 2000,
     });
     modalOpenBoolean(false);
   };
@@ -146,7 +116,7 @@ const modalBody = ({
           marginTop: "15px",
           marginBottom: "15px",
           width: "100%",
-          backgroundColor: "black",
+          backgroundColor: "white",
         }}
       />
       <TextField

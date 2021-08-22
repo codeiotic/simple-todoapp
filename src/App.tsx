@@ -21,10 +21,11 @@ import { AiFillDelete } from "react-icons/ai";
 import useLocalStorage from "./hooks/useLocalStorage";
 import "./styles.css";
 import modalBody from "./ModalComponent";
+import AppStyles from "./styles/App";
+import FlipMove from "react-flip-move";
 
 export default function App() {
-  // TODO: Look into the animations for the lists
-
+  const className = AppStyles();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [value, setValue] = useState<string>("");
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -50,6 +51,7 @@ export default function App() {
     if (value.trim().length >= 30) {
       enqueueSnackbar("Please enter todos which are less than 30 letters", {
         variant: "warning",
+        autoHideDuration: 2000,
       });
       setValue("");
       inputRef.current?.blur();
@@ -63,10 +65,12 @@ export default function App() {
       setValue("");
       enqueueSnackbar("Todo created!", {
         variant: "success",
+        autoHideDuration: 2000,
       });
     } else {
       enqueueSnackbar("Please enter text to add a Todo", {
         variant: "warning",
+        autoHideDuration: 2000,
       });
     }
   };
@@ -75,11 +79,13 @@ export default function App() {
     if (todosArray.length === 0) {
       enqueueSnackbar("No todos to clear", {
         variant: "warning",
+        autoHideDuration: 2000,
       });
     } else {
       clearTodos();
       enqueueSnackbar("Cleared all Todos", {
         variant: "success",
+        autoHideDuration: 2000,
       });
     }
   };
@@ -110,124 +116,112 @@ export default function App() {
 
   return (
     <>
-      <div className="App">
-        <form
-          action=""
-          className="form"
-          style={{
-            marginRight: "20px",
-            marginLeft: "20px",
-            maxWidth: "640px",
+      <div className={className.parent}>
+        <div className={className.main}>
+          <form action="" className={className.form}>
+            <TextField
+              id="outlined-basic"
+              label="Enter a Todo"
+              value={value}
+              onChange={onChangeHandler}
+              variant="outlined"
+              fullWidth
+              className={className.input}
+            />
+
+            <Button
+              variant="contained"
+              color="primary"
+              type="submit"
+              className={className.button}
+              onClick={addTodoHandler}
+            >
+              Add
+            </Button>
+
+            <Button
+              className={className.button}
+              variant="contained"
+              color="secondary"
+              onClick={clearTodosHandler}
+              type="button"
+            >
+              Clear All
+            </Button>
+          </form>
+
+          <DragDropContext onDragEnd={handleDragEnd}>
+            <Droppable droppableId="todos">
+              {(provided) => (
+                <List
+                  className={className.listParent}
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                >
+                  <FlipMove>
+                    {todosArray.map(({ todos, id }, index) => {
+                      return (
+                        <div key={index}>
+                          <Draggable
+                            draggableId={String(id)}
+                            index={index}
+                            key={id}
+                          >
+                            {(provided) => (
+                              <ListItem
+                                className={className.list}
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                              >
+                                <ListItemText
+                                  onClick={() => handleModalOpen(todos, index)}
+                                >
+                                  {todos}
+                                </ListItemText>
+                                <ListItemIcon>
+                                  <AiFillDelete
+                                    className={className.del}
+                                    onClick={() => {
+                                      deleteHandler(index);
+                                    }}
+                                  />
+                                </ListItemIcon>
+                              </ListItem>
+                            )}
+                          </Draggable>
+                        </div>
+                      );
+                    })}
+                  </FlipMove>
+                  {provided.placeholder}
+                </List>
+              )}
+            </Droppable>
+          </DragDropContext>
+        </div>
+        <Modal
+          open={modalOpen}
+          onClose={handleModalClose}
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+          closeAfterTransition
+          BackdropComponent={Backdrop}
+          BackdropProps={{
+            timeout: 500,
           }}
         >
-          <TextField
-            id="outlined-basic"
-            label="Enter a Todo"
-            value={value}
-            onChange={onChangeHandler}
-            variant="outlined"
-            fullWidth
-            style={{
-              margin: "20px",
-              maxWidth: "90%",
-              minWidth: "50%",
-            }}
-          />
-
-          <Button
-            variant="contained"
-            color="primary"
-            type="submit"
-            style={{
-              marginBottom: "15px",
-              width: "140px",
-              maxWidth: "32%",
-              minWidth: "32%",
-            }}
-            onClick={addTodoHandler}
-          >
-            Add Todo
-          </Button>
-
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={clearTodosHandler}
-            type="button"
-            style={{
-              marginBottom: "15px",
-              width: "140px",
-              maxWidth: "34%",
-              minWidth: "32%",
-            }}
-          >
-            Clear Todos
-          </Button>
-        </form>
-        <DragDropContext onDragEnd={handleDragEnd}>
-          <Droppable droppableId="todos">
-            {(provided) => (
-              <List
-                className="todos"
-                {...provided.droppableProps}
-                ref={provided.innerRef}
-                style={{
-                  margin: "20px",
-                }}
-              >
-                {todosArray.map(({ todos, id }, index) => {
-                  return (
-                    <Draggable draggableId={String(id)} index={index} key={id}>
-                      {(provided, snapshot) => (
-                        <ListItem
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                        >
-                          <ListItemText
-                            onClick={() => handleModalOpen(todos, index)}
-                          >
-                            {todos}
-                          </ListItemText>
-                          <ListItemIcon>
-                            <AiFillDelete
-                              className="del"
-                              onClick={() => {
-                                deleteHandler(index);
-                              }}
-                            />
-                          </ListItemIcon>
-                        </ListItem>
-                      )}
-                    </Draggable>
-                  );
-                })}
-                {provided.placeholder}
-              </List>
-            )}
-          </Droppable>
-        </DragDropContext>
+          <Fade in={modalOpen}>
+            {modalBody({
+              todoState: todoContent,
+              todosArray: todosArray,
+              modalOpenBoolean: setModalOpen,
+              modalOpenBooleanValue: modalOpen,
+            })}
+          </Fade>
+        </Modal>
       </div>
-      <Modal
-        open={modalOpen}
-        onClose={handleModalClose}
-        aria-labelledby="simple-modal-title"
-        aria-describedby="simple-modal-description"
-        closeAfterTransition
-        BackdropComponent={Backdrop}
-        BackdropProps={{
-          timeout: 500,
-        }}
-      >
-        <Fade in={modalOpen}>
-          {modalBody({
-            todoState: todoContent,
-            todosArray: todosArray,
-            modalOpenBoolean: setModalOpen,
-            modalOpenBooleanValue: modalOpen,
-          })}
-        </Fade>
-      </Modal>
+      <img src="/assets/wave-haikei.svg" alt="" className={className.waves} />
     </>
   );
 }
