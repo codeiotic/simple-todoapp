@@ -26,9 +26,8 @@ import FlipMove from "react-flip-move";
 
 export default function App() {
   const className = AppStyles();
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const { enqueueSnackbar } = useSnackbar();
   const [value, setValue] = useState<string>("");
-  const inputRef = useRef<HTMLInputElement | null>(null);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [todoContent, setTodoContent] = useState<{
     todo: string;
@@ -38,7 +37,7 @@ export default function App() {
     index: 0,
   });
 
-  let { todosArray, clearTodos, addTodo, deleteTodo, setTodos, updateTodo } =
+  let { todosArray, clearTodos, addTodo, deleteTodo, updateTodo } =
     useLocalStorage();
 
   const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
@@ -47,31 +46,43 @@ export default function App() {
 
   const addTodoHandler = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    inputRef.current?.blur();
-    if (value.trim().length >= 30) {
-      enqueueSnackbar("Please enter todos which are less than 30 letters", {
-        variant: "warning",
-        autoHideDuration: 2000,
-      });
-      setValue("");
-      inputRef.current?.blur();
-      return;
-    }
-    if (value.trim()) {
-      addTodo({
-        id: todosArray.length + 1,
-        todos: value,
-      });
-      setValue("");
-      enqueueSnackbar("Todo created!", {
-        variant: "success",
-        autoHideDuration: 2000,
-      });
-    } else {
-      enqueueSnackbar("Please enter text to add a Todo", {
-        variant: "warning",
-        autoHideDuration: 2000,
-      });
+    let todoAlreadyExists: boolean = false;
+    todosArray.map((todo) => {
+      if (Object.values(todo).indexOf(value) > -1) {
+        setValue("");
+        todoAlreadyExists = true;
+        enqueueSnackbar(`"${value}" is already in the list`, {
+          variant: "error",
+        });
+      } else {
+        todoAlreadyExists = false;
+      }
+    });
+    if (!todoAlreadyExists) {
+      if (value.trim().length >= 30) {
+        enqueueSnackbar("Please enter todos which are less than 30 letters", {
+          variant: "warning",
+          autoHideDuration: 2000,
+        });
+        setValue("");
+        return;
+      }
+      if (value.trim()) {
+        addTodo({
+          id: todosArray.length + 1,
+          todos: value,
+        });
+        setValue("");
+        enqueueSnackbar("Todo created!", {
+          variant: "success",
+          autoHideDuration: 2000,
+        });
+      } else {
+        enqueueSnackbar("Please enter text to add a Todo", {
+          variant: "warning",
+          autoHideDuration: 2000,
+        });
+      }
     }
   };
 
@@ -174,18 +185,18 @@ export default function App() {
                                 {...provided.draggableProps}
                                 {...provided.dragHandleProps}
                               >
-                                <ListItemText
+                                <div
                                   onClick={() => handleModalOpen(todos, index)}
+                                  className={className.listContentWrapper}
                                 >
-                                  {todos}
-                                </ListItemText>
-                                <ListItemIcon>
-                                  <AiFillDelete
-                                    className={className.del}
-                                    onClick={() => {
-                                      deleteHandler(index);
-                                    }}
-                                  />
+                                  <ListItemText>{todos}</ListItemText>
+                                </div>
+                                <ListItemIcon
+                                  onClick={() => {
+                                    deleteHandler(index);
+                                  }}
+                                >
+                                  <AiFillDelete className={className.del} />
                                 </ListItemIcon>
                               </ListItem>
                             )}
