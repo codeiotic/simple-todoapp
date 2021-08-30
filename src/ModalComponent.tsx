@@ -33,7 +33,7 @@ const modalBody = ({
   const classes = modalStyles();
   const [value, setValue] = useState<string>(todoState.todo);
   const [disabled, setDisabled] = useState<boolean>(true);
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const { enqueueSnackbar } = useSnackbar();
   let { deleteTodo, updateTodo } = useLocalStorage();
 
   useEffect(() => {
@@ -46,32 +46,46 @@ const modalBody = ({
   }, [modalOpenBooleanValue]);
 
   const changeTodo = () => {
+    if (value.length >= 30) {
+      enqueueSnackbar("Todo must be less than 30 characters", {
+        variant: "error",
+      });
+      setValue(todoState.todo);
+      return;
+    }
     let localTodosArray = todosArray;
     localTodosArray.sort((a, b) => {
       return a.id - b.id;
     });
 
-    localTodosArray.map(({ id, todos }, index) => {
-      console.log([id, index, todoState.index]);
-      if (id - 1 === todoState.index) {
-        updateTodo({
-          content: {
-            // The id is not necessarily needed, but removing it will give some type errors
-            // Will remove it in future commits
-            // But for now it works like a charm :)
-            id: todoState.index,
-            todos: value,
-          },
-          index: id - 1,
+    let todoAlreadyExists: boolean = false;
+    localTodosArray.map((todo) => {
+      if (Object.values(todo).indexOf(value) > -1) {
+        todoAlreadyExists = true;
+        enqueueSnackbar(`"${value}" is already in the list`, {
+          variant: "error",
         });
       }
     });
 
-    enqueueSnackbar("Todo successfully changed", {
-      variant: "success",
-      autoHideDuration: 2000,
-    });
-    modalOpenBoolean(false);
+    if (!todoAlreadyExists) {
+      localTodosArray.map(({ id }) => {
+        if (id - 1 === todoState.index) {
+          updateTodo({
+            content: {
+              id: todoState.index,
+              todos: value,
+            },
+            index: id - 1,
+          });
+        }
+      });
+      enqueueSnackbar("Todo successfully changed", {
+        variant: "success",
+        autoHideDuration: 2000,
+      });
+      modalOpenBoolean(false);
+    }
   };
 
   const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
@@ -122,7 +136,7 @@ const modalBody = ({
       <TextField
         autoComplete="off"
         id="standard-basic"
-        label="Standard"
+        label="Change Todo"
         value={value}
         onChange={onChangeHandler}
         style={{
