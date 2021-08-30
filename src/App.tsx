@@ -67,7 +67,7 @@ export default function App() {
         setValue("");
         return;
       }
-      if (value.trim()) {
+      if (value.trim() && !todoAlreadyExists) {
         addTodo({
           id: todosArray.length + 1,
           todos: value,
