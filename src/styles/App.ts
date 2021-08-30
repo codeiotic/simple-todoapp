@@ -91,6 +91,9 @@ const AppStyles = makeStyles((theme: Theme) =>
       cursor: "pointer",
       minWidth: "300px",
     },
+    listContentWrapper: {
+      flex: "1",
+    },
     del: {
       display: "none",
       fontSize: "19px !important",
