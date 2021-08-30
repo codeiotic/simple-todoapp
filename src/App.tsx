@@ -16,7 +16,7 @@ import {
   DropResult,
 } from "react-beautiful-dnd";
 import { useSnackbar } from "notistack";
-import { ChangeEvent, MouseEvent, useRef, useState } from "react";
+import { ChangeEvent, MouseEvent, useState } from "react";
 import { AiFillDelete } from "react-icons/ai";
 import useLocalStorage from "./hooks/useLocalStorage";
 import "./styles.css";
@@ -48,14 +48,12 @@ export default function App() {
     e.preventDefault();
     let todoAlreadyExists: boolean = false;
     todosArray.map((todo) => {
-      if (Object.values(todo).indexOf(value) > -1) {
-        setValue("");
+      if (Object.values(todo).includes(value.trim())) {
         todoAlreadyExists = true;
+        setValue("");
         enqueueSnackbar(`"${value}" is already in the list`, {
           variant: "error",
         });
-      } else {
-        todoAlreadyExists = false;
       }
     });
     if (!todoAlreadyExists) {
