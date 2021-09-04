@@ -1,5 +1,4 @@
 import { Button, Divider, TextField } from "@material-ui/core";
-import { useSnackbar } from "notistack";
 import {
   ChangeEvent,
   Dispatch,
@@ -10,13 +9,13 @@ import {
 import useLocalStorage from "./hooks/useLocalStorage";
 import modalStyles from "./styles/Modal";
 
-interface TodosSchema {
-  id: number;
+export interface TodosSchema {
+  index: number;
   todos: string;
 }
-interface ModalComponentProps {
+export interface ModalComponentProps {
   todoState: {
-    todo: string;
+    todos: string;
     index: number;
   };
   todosArray: TodosSchema[];
@@ -31,70 +30,62 @@ const modalBody = ({
   modalOpenBooleanValue,
 }: ModalComponentProps): JSX.Element => {
   const classes = modalStyles();
-  const [value, setValue] = useState<string>(todoState.todo);
+  const [value, setValue] = useState<string>(todoState.todos);
   const [disabled, setDisabled] = useState<boolean>(true);
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   let { deleteTodo, updateTodo } = useLocalStorage();
 
-  useEffect(() => {
-    setValue(todoState.todo);
-  }, [todoState.todo]);
+  useEffect((): void => {
+    setValue(todoState.todos);
+  }, [todoState.todos]);
 
-  useEffect(() => {
-    setValue(todoState.todo);
+  useEffect((): void => {
+    setValue(todoState.todos);
     setDisabled(true);
   }, [modalOpenBooleanValue]);
 
-  const changeTodo = () => {
+  const changeTodo = (): void => {
     let localTodosArray = todosArray;
-    localTodosArray.sort((a, b) => {
-      return a.id - b.id;
+    localTodosArray.sort((a: TodosSchema, b: TodosSchema): number => {
+      return a.index - b.index;
     });
 
-    localTodosArray.map(({ id, todos }, index) => {
-      console.log([id, index, todoState.index]);
-      if (id - 1 === todoState.index) {
-        updateTodo({
-          content: {
-            // The id is not necessarily needed, but removing it will give some type errors
-            // Will remove it in future commits
-            // But for now it works like a charm :)
-            id: todoState.index,
-            todos: value,
-          },
-          index: id - 1,
-        });
+    localTodosArray.map(
+      ({ index, todos }: TodosSchema, index2: number): void => {
+        if (index - 1 === todoState.index) {
+          updateTodo({
+            content: {
+              // TODO: Remove id from here, find a better way to implement this
+              index: todoState.index,
+              todos: value,
+              completed: false,
+            },
+            index: index - 1,
+          });
+        }
       }
-    });
+    );
 
-    enqueueSnackbar("Todo successfully changed", {
-      variant: "success",
-      autoHideDuration: 2000,
-    });
     modalOpenBoolean(false);
   };
 
-  const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+  const onChangeHandler = (e: ChangeEvent<HTMLInputElement>): void => {
     setValue(e.target.value);
-    let inputVal = e.target.value;
+    let inputVal = e.target.value.trim();
+    let todo = todoState.todos;
 
-    if (inputVal.trim() !== "" && inputVal.trim() !== todoState.todo) {
+    if (inputVal !== "" && inputVal !== todo) {
       setDisabled(false);
-    } else if (inputVal.trim() === todoState.todo) {
+    } else if (inputVal === todo) {
       setDisabled(true);
-    } else if (value.trim() === todoState.todo) {
+    } else if (value === todo) {
       setDisabled(true);
     } else {
       setDisabled(true);
     }
   };
 
-  const deleteTodoHandler = () => {
+  const deleteTodoHandler = (): void => {
     deleteTodo(todoState.index);
-    enqueueSnackbar("Todo deleted", {
-      variant: "error",
-      autoHideDuration: 2000,
-    });
     modalOpenBoolean(false);
   };
 
