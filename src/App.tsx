@@ -40,8 +40,8 @@ export default function App(): JSX.Element {
     completed: false,
   });
 
-
-  const { todosArray, clearTodos, addTodo, deleteTodo, updateTodo } = useLocalStorage();
+  const { todosArray, clearTodos, addTodo, deleteTodo, updateTodo } =
+    useLocalStorage();
 
   const onChangeHandler = (e: ChangeEvent<HTMLInputElement>): void => {
     setValue(e.target.value);
@@ -60,7 +60,7 @@ export default function App(): JSX.Element {
     e.preventDefault();
 
     let todoAlreadyExists: boolean = false;
-    todosArray.map((todo) => {
+    todosArray.map((todo: TodosSchema): void => {
       if (Object.values(todo).includes(value.trim())) {
         todoAlreadyExists = true;
         setValue("");
@@ -80,8 +80,9 @@ export default function App(): JSX.Element {
       }
       if (value.trim() && !todoAlreadyExists) {
         addTodo({
-          id: todosArray.length + 1,
+          index: maxIndexValue() + 1,
           todos: value,
+          completed: false,
         });
         setValue("");
         enqueueSnackbar("Todo created!", {
@@ -94,7 +95,6 @@ export default function App(): JSX.Element {
           autoHideDuration: 2000,
         });
       }
-
     }
   };
 
@@ -118,11 +118,11 @@ export default function App(): JSX.Element {
     });
   };
 
-  const handleModalClose = () => {
+  const handleModalClose = (): void => {
     setModalOpen(false);
   };
 
-  const handleDragEnd = (result: DropResult) => {
+  const handleDragEnd = (result: DropResult): void => {
     if (!result.destination) return;
     let items = Array.from(todosArray);
     let [reorderedItem] = items.splice(result.source.index, 1);
@@ -130,7 +130,7 @@ export default function App(): JSX.Element {
     updateTodo({ newTodosArr: items });
   };
 
-  const deleteHandler = (index: number) => {
+  const deleteHandler = (index: number): void => {
     deleteTodo(index);
   };
 
@@ -211,7 +211,7 @@ export default function App(): JSX.Element {
                           </div>
                         );
                       }
-                    )}    
+                    )}
                   </FlipMove>
                   {provided.placeholder}
                 </List>

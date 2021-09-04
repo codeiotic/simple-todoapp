@@ -46,13 +46,12 @@ const modalBody = ({
     setDisabled(true);
   }, [modalOpenBooleanValue]);
 
-
-  const changeTodo = () => {
+  const changeTodo = (): void => {
     if (value.length >= 30) {
       enqueueSnackbar("Todo must be less than 30 characters", {
         variant: "error",
       });
-      setValue(todoState.todo);
+      setValue(todoState.todos);
       return;
     }
     let localTodosArray = todosArray;
@@ -60,25 +59,25 @@ const modalBody = ({
       return a.index - b.index;
     });
 
-
     let todoAlreadyExists: boolean = false;
-   localTodosArray.map((todo) => {
-  if (Object.values(todo).indexOf(value) > -1) {
-    todoAlreadyExists = true;
-    enqueueSnackbar(`"${value}" is already in the list`, {
-      variant: "error",
+    localTodosArray.map((todo: TodosSchema): void => {
+      if (Object.values(todo).indexOf(value) > -1) {
+        todoAlreadyExists = true;
+        enqueueSnackbar(`"${value}" is already in the list`, {
+          variant: "error",
+        });
+      }
     });
-  }
-});
     if (!todoAlreadyExists) {
-      localTodosArray.map(({ id }) => {
-        if (id - 1 === todoState.index) {
+      localTodosArray.map(({ index }: TodosSchema): void => {
+        if (index - 1 === todoState.index) {
           updateTodo({
             content: {
-              id: todoState.index,
+              index: todoState.index,
               todos: value,
+              completed: false,
             },
-            index: id - 1,
+            index: index - 1,
           });
         }
       });
