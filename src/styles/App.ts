@@ -63,7 +63,7 @@ const AppStyles = makeStyles((theme: Theme) =>
       flexDirection: "column",
       alignItems: "center",
       justifyContent: "center",
-      width: "60%",
+      width: "100%",
       fontSize: "1.1rem",
       paddingBottom: "60px",
     },
@@ -90,6 +90,7 @@ const AppStyles = makeStyles((theme: Theme) =>
       padding: "15px",
       cursor: "pointer",
       minWidth: "300px",
+      maxWidth: "800px",
     },
     del: {
       display: "none",
