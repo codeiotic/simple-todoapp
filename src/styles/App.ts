@@ -92,6 +92,9 @@ const AppStyles = makeStyles((theme: Theme) =>
       minWidth: "300px",
       maxWidth: "800px",
     },
+    listContentWrapper: {
+      flex: "1",
+    },
     del: {
       display: "none",
       fontSize: "19px !important",

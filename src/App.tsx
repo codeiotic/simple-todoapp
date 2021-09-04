@@ -40,8 +40,8 @@ export default function App(): JSX.Element {
     completed: false,
   });
 
-  const { todosArray, clearTodos, addTodo, deleteTodo, updateTodo } =
-    useLocalStorage();
+
+  const { todosArray, clearTodos, addTodo, deleteTodo, updateTodo } = useLocalStorage();
 
   const onChangeHandler = (e: ChangeEvent<HTMLInputElement>): void => {
     setValue(e.target.value);
@@ -58,27 +58,43 @@ export default function App(): JSX.Element {
 
   const addTodoHandler = (e: MouseEvent<HTMLButtonElement>): void => {
     e.preventDefault();
-    if (value.trim().length >= 30) {
-      enqueueSnackbar("Please enter todos which are less than 30 letters", {
-        variant: "warning",
-        autoHideDuration: 2000,
-      });
-      setValue("");
-      return;
-    }
 
-    if (value.trim()) {
-      addTodo({
-        index: maxIndexValue() + 1,
-        todos: value,
-        completed: false,
-      });
-      setValue("");
-    } else {
-      enqueueSnackbar("Please enter text to add a Todo", {
-        variant: "warning",
-        autoHideDuration: 2000,
-      });
+    let todoAlreadyExists: boolean = false;
+    todosArray.map((todo) => {
+      if (Object.values(todo).includes(value.trim())) {
+        todoAlreadyExists = true;
+        setValue("");
+        enqueueSnackbar(`"${value}" is already in the list`, {
+          variant: "error",
+        });
+      }
+    });
+    if (!todoAlreadyExists) {
+      if (value.trim().length >= 30) {
+        enqueueSnackbar("Please enter todos which are less than 30 letters", {
+          variant: "warning",
+          autoHideDuration: 2000,
+        });
+        setValue("");
+        return;
+      }
+      if (value.trim() && !todoAlreadyExists) {
+        addTodo({
+          id: todosArray.length + 1,
+          todos: value,
+        });
+        setValue("");
+        enqueueSnackbar("Todo created!", {
+          variant: "success",
+          autoHideDuration: 2000,
+        });
+      } else {
+        enqueueSnackbar("Please enter text to add a Todo", {
+          variant: "warning",
+          autoHideDuration: 2000,
+        });
+      }
+
     }
   };
 
@@ -195,7 +211,7 @@ export default function App(): JSX.Element {
                           </div>
                         );
                       }
-                    )}
+                    )}    
                   </FlipMove>
                   {provided.placeholder}
                 </List>

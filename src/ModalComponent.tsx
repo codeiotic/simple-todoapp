@@ -8,6 +8,7 @@ import {
 } from "react";
 import useLocalStorage from "./hooks/useLocalStorage";
 import modalStyles from "./styles/Modal";
+import { useSnackbar } from "notistack";
 
 export interface TodosSchema {
   index: number;
@@ -32,6 +33,8 @@ const modalBody = ({
   const classes = modalStyles();
   const [value, setValue] = useState<string>(todoState.todos);
   const [disabled, setDisabled] = useState<boolean>(true);
+
+  const { enqueueSnackbar } = useSnackbar();
   let { deleteTodo, updateTodo } = useLocalStorage();
 
   useEffect((): void => {
@@ -43,29 +46,48 @@ const modalBody = ({
     setDisabled(true);
   }, [modalOpenBooleanValue]);
 
-  const changeTodo = (): void => {
+
+  const changeTodo = () => {
+    if (value.length >= 30) {
+      enqueueSnackbar("Todo must be less than 30 characters", {
+        variant: "error",
+      });
+      setValue(todoState.todo);
+      return;
+    }
     let localTodosArray = todosArray;
     localTodosArray.sort((a: TodosSchema, b: TodosSchema): number => {
       return a.index - b.index;
     });
 
-    localTodosArray.map(
-      ({ index, todos }: TodosSchema, index2: number): void => {
-        if (index - 1 === todoState.index) {
+
+    let todoAlreadyExists: boolean = false;
+   localTodosArray.map((todo) => {
+  if (Object.values(todo).indexOf(value) > -1) {
+    todoAlreadyExists = true;
+    enqueueSnackbar(`"${value}" is already in the list`, {
+      variant: "error",
+    });
+  }
+});
+    if (!todoAlreadyExists) {
+      localTodosArray.map(({ id }) => {
+        if (id - 1 === todoState.index) {
           updateTodo({
             content: {
-              // TODO: Remove id from here, find a better way to implement this
-              index: todoState.index,
+              id: todoState.index,
               todos: value,
-              completed: false,
             },
-            index: index - 1,
+            index: id - 1,
           });
         }
-      }
-    );
-
-    modalOpenBoolean(false);
+      });
+      enqueueSnackbar("Todo successfully changed", {
+        variant: "success",
+        autoHideDuration: 2000,
+      });
+      modalOpenBoolean(false);
+    }
   };
 
   const onChangeHandler = (e: ChangeEvent<HTMLInputElement>): void => {
@@ -113,7 +135,7 @@ const modalBody = ({
       <TextField
         autoComplete="off"
         id="standard-basic"
-        label="Standard"
+        label="Change Todo"
         value={value}
         onChange={onChangeHandler}
         style={{
