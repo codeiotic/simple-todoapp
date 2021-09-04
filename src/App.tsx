@@ -13,7 +13,7 @@ import {
   DropResult,
 } from "react-beautiful-dnd";
 import { useSnackbar } from "notistack";
-import { ChangeEvent, MouseEvent, useEffect, useRef, useState } from "react";
+import { ChangeEvent, MouseEvent, useState } from "react";
 import useLocalStorage from "./hooks/useLocalStorage";
 import "./styles.css";
 import modalBody from "./ModalComponent";
