@@ -38,7 +38,7 @@ function useLocalStorage(): ReturnInterface {
   let todos: TodosSchema[] = todosArray;
   let localStorageTodos = localStorage.getItem("todos");
 
-  useEffect(() => {
+  useEffect((): void => {
     if (localStorageTodos) {
       setTodos(JSON.parse(localStorageTodos));
       todos = JSON.parse(localStorageTodos);
@@ -142,7 +142,11 @@ function useLocalStorage(): ReturnInterface {
     index,
   }: UpdateTodoProps): void => {
     if (content) {
-      todos[index].todos = content.todos;
+      todos.map((todo: TodosSchema): void => {
+        if (todo.index === index) {
+          todo.todos = content.todos;
+        }
+      });
       enqueueSnackbar("Todo Updated!", {
         variant: "success",
       });

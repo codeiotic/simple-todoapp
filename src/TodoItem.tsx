@@ -35,7 +35,7 @@ const TodoItem = ({
     >
       <ListItemText
         id={String(todoIndex)}
-        onClick={(): void => handleModalOpen(todos, completed, todoArrayIndex)}
+        onClick={(): void => handleModalOpen(todos, completed, todoIndex)}
       >
         {todosArray[todoIndex - 1]?.completed
           ? ReactHtmlParser(todos.strike())

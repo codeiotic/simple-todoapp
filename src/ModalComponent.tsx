@@ -55,40 +55,37 @@ const modalBody = ({
       return;
     }
     let localTodosArray = todosArray;
-    localTodosArray.sort((a: TodosSchema, b: TodosSchema): number => {
-      return a.index - b.index;
-    });
 
     let todoAlreadyExists: boolean = false;
     localTodosArray.map((todo: TodosSchema): void => {
+      localTodosArray.sort((a: TodosSchema, b: TodosSchema): number => {
+        return a.index - b.index;
+      });
       if (Object.values(todo).indexOf(value) > -1) {
         todoAlreadyExists = true;
+        setValue(todoState.todos);
         enqueueSnackbar(`"${value}" is already in the list`, {
           variant: "error",
         });
       }
     });
+
     if (!todoAlreadyExists) {
       localTodosArray.map(({ index }: TodosSchema): void => {
-        if (index - 1 === todoState.index) {
+        if (index === todoState.index) {
           updateTodo({
             content: {
-              index: todoState.index,
+              index: index,
               todos: value,
               completed: false,
             },
-            index: index - 1,
+            index: index,
           });
         }
-      });
-      enqueueSnackbar("Todo successfully changed", {
-        variant: "success",
-        autoHideDuration: 2000,
       });
       modalOpenBoolean(false);
     }
   };
-
   const onChangeHandler = (e: ChangeEvent<HTMLInputElement>): void => {
     setValue(e.target.value);
     let inputVal = e.target.value.trim();
