@@ -14,8 +14,11 @@ export interface UpdateTodoProps {
 
 export interface ReturnInterface {
   todosArray: TodosSchema[];
+  /**
+   * Some sort of comment!
+   */
   clearTodos: (index?: number) => void;
-  completeTodo: (
+  markTodoComplete: (
     value: TodosSchema,
     completeOrNot: boolean,
     element: HTMLSpanElement,
@@ -25,12 +28,8 @@ export interface ReturnInterface {
   deleteTodo: (index: number) => void;
   updateTodo: (props: UpdateTodoProps) => void;
   setTodos: React.Dispatch<React.SetStateAction<TodosSchema[]>>;
+  completeTodo: (index: number, completed: boolean) => void;
 }
-
-/**
- * @description Returns the useLocalStorage hook.
- * @returns {ReturnInterface} Helper functions to use inside the whole app.
- */
 
 function useLocalStorage(): ReturnInterface {
   const { enqueueSnackbar } = useSnackbar();
@@ -50,13 +49,10 @@ function useLocalStorage(): ReturnInterface {
   }, [todosArray]);
 
   /**
-   * @function
-   * @method
-   * @description Clear's all the todos if no index is passed. If an index is passed, it will clear the todo at the index passed.
-   * @param {number} index - (Optional) Index of the todo to be deleted.
-   * @inner
+   * @method clearTodos
+   * @memberof useLocalStorage
+   * @description How are you soo good at life??
    */
-
   const clearTodos = (index?: number): void => {
     if (index) {
       setTodos(todosArray.splice(index, 1));
@@ -70,11 +66,6 @@ function useLocalStorage(): ReturnInterface {
     });
   };
 
-  /**
-   * @description Adds a todo to the todos array relative to the parameters passed.
-   * @param {TodosSchema} value - The todo to be added.
-   * @param {number} [index] - (Optional) The index to add a todo.
-   */
   const addTodo = (value: TodosSchema, index?: number): void => {
     if (index) {
       todos?.splice(index, 1, value);
@@ -90,7 +81,7 @@ function useLocalStorage(): ReturnInterface {
     });
   };
 
-  const completeTodo = (
+  const markTodoComplete = (
     todo: TodosSchema,
     completeOrNot: boolean,
     element: HTMLSpanElement,
@@ -111,6 +102,23 @@ function useLocalStorage(): ReturnInterface {
     }
   };
 
+  const completeTodo = (index: number, completed: boolean): void => {
+    console.log(todos);
+    todos.map((todo: TodosSchema, todoIndex: number): void => {
+      console.log("index", index);
+      console.log("todoIndex", todoIndex);
+      if (index === todoIndex) {
+        todo.completed = completed;
+        console.log(todos[todoIndex]);
+        setTodos(todos);
+      } else {
+        todo.completed = todo.completed;
+      }
+    });
+    console.log(todos);
+    localStorage.setItem("todos", JSON.stringify(todosArray));
+  };
+
   /**
    * @method
    * @function
@@ -129,13 +137,13 @@ function useLocalStorage(): ReturnInterface {
   };
 
   /**
+   * This is just a hook which helps to update the todos array, at any instance
    * @description Updates a todo at a specific index.
    * @param {UpdateTodoProps} props - The props to be passed to update the todo.
    * @param {TodosSchema[]} props.newTodosArr - The new todos array to be set.
    * @param {TodosSchema} props.content - The todo content to be updated.
    * @param {number} props.index - The index of the todo to be updated.
    */
-
   const updateTodo = ({
     newTodosArr,
     content,
@@ -164,6 +172,7 @@ function useLocalStorage(): ReturnInterface {
     deleteTodo,
     updateTodo,
     setTodos,
+    markTodoComplete,
     completeTodo,
   };
 }

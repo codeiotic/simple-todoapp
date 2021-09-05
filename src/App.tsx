@@ -40,7 +40,7 @@ export default function App(): JSX.Element {
     completed: false,
   });
 
-  const { todosArray, clearTodos, addTodo, deleteTodo, updateTodo } =
+  const { addTodo, todosArray, deleteTodo, updateTodo, clearTodos } =
     useLocalStorage();
 
   const onChangeHandler = (e: ChangeEvent<HTMLInputElement>): void => {
