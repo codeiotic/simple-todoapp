@@ -4,6 +4,14 @@
   box-sizing: border-box;
 }
 
+body {
+  font-family: "Roboto", sans-serif;
+}
+
+strike {
+  font-size: 19px;
+}
+
 *:not(svg, path) {
   color: white;
 }

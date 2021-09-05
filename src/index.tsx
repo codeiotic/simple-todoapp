@@ -5,7 +5,7 @@ import App from "./App";
 
 const rootElement = document.getElementById("root");
 render(
-  <SnackbarProvider maxSnack={1}>
+  <SnackbarProvider maxSnack={1} autoHideDuration={2000}>
     <App />
   </SnackbarProvider>,
   rootElement

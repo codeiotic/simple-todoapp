@@ -1,5 +1,4 @@
 import { Button, Divider, TextField } from "@material-ui/core";
-import { useSnackbar } from "notistack";
 import {
   ChangeEvent,
   Dispatch,
@@ -9,14 +8,15 @@ import {
 } from "react";
 import useLocalStorage from "./hooks/useLocalStorage";
 import modalStyles from "./styles/Modal";
+import { useSnackbar } from "notistack";
 
-interface TodosSchema {
-  id: number;
+export interface TodosSchema {
+  index: number;
   todos: string;
 }
-interface ModalComponentProps {
+export interface ModalComponentProps {
   todoState: {
-    todo: string;
+    todos: string;
     index: number;
   };
   todosArray: TodosSchema[];
@@ -31,37 +31,39 @@ const modalBody = ({
   modalOpenBooleanValue,
 }: ModalComponentProps): JSX.Element => {
   const classes = modalStyles();
-  const [value, setValue] = useState<string>(todoState.todo);
+  const [value, setValue] = useState<string>(todoState.todos);
   const [disabled, setDisabled] = useState<boolean>(true);
+
   const { enqueueSnackbar } = useSnackbar();
   let { deleteTodo, updateTodo } = useLocalStorage();
 
-  useEffect(() => {
-    setValue(todoState.todo);
-  }, [todoState.todo]);
+  useEffect((): void => {
+    setValue(todoState.todos);
+  }, [todoState.todos]);
 
-  useEffect(() => {
-    setValue(todoState.todo);
+  useEffect((): void => {
+    setValue(todoState.todos);
     setDisabled(true);
   }, [modalOpenBooleanValue]);
 
-  const changeTodo = () => {
+  const changeTodo = (): void => {
     if (value.length >= 30) {
       enqueueSnackbar("Todo must be less than 30 characters", {
         variant: "error",
       });
-      setValue(todoState.todo);
+      setValue(todoState.todos);
       return;
     }
     let localTodosArray = todosArray;
-    localTodosArray.sort((a, b) => {
-      return a.id - b.id;
-    });
 
     let todoAlreadyExists: boolean = false;
-    localTodosArray.map((todo) => {
+    localTodosArray.map((todo: TodosSchema): void => {
+      localTodosArray.sort((a: TodosSchema, b: TodosSchema): number => {
+        return a.index - b.index;
+      });
       if (Object.values(todo).indexOf(value) > -1) {
         todoAlreadyExists = true;
+        setValue(todoState.todos);
         enqueueSnackbar(`"${value}" is already in the list`, {
           variant: "error",
         });
@@ -69,46 +71,39 @@ const modalBody = ({
     });
 
     if (!todoAlreadyExists) {
-      localTodosArray.map(({ id }) => {
-        if (id - 1 === todoState.index) {
+      localTodosArray.map(({ index }: TodosSchema): void => {
+        if (index === todoState.index) {
           updateTodo({
             content: {
-              id: todoState.index,
+              index: index,
               todos: value,
+              completed: false,
             },
-            index: id - 1,
+            index: index,
           });
         }
-      });
-      enqueueSnackbar("Todo successfully changed", {
-        variant: "success",
-        autoHideDuration: 2000,
       });
       modalOpenBoolean(false);
     }
   };
-
-  const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+  const onChangeHandler = (e: ChangeEvent<HTMLInputElement>): void => {
     setValue(e.target.value);
-    let inputVal = e.target.value;
+    let inputVal = e.target.value.trim();
+    let todo = todoState.todos;
 
-    if (inputVal.trim() !== "" && inputVal.trim() !== todoState.todo) {
+    if (inputVal !== "" && inputVal !== todo) {
       setDisabled(false);
-    } else if (inputVal.trim() === todoState.todo) {
+    } else if (inputVal === todo) {
       setDisabled(true);
-    } else if (value.trim() === todoState.todo) {
+    } else if (value === todo) {
       setDisabled(true);
     } else {
       setDisabled(true);
     }
   };
 
-  const deleteTodoHandler = () => {
+  const deleteTodoHandler = (): void => {
     deleteTodo(todoState.index);
-    enqueueSnackbar("Todo deleted", {
-      variant: "error",
-      autoHideDuration: 2000,
-    });
     modalOpenBoolean(false);
   };
 

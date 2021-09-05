@@ -3,9 +3,6 @@ import {
   Button,
   Fade,
   List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
   Modal,
   TextField,
 } from "@material-ui/core";
@@ -17,37 +14,53 @@ import {
 } from "react-beautiful-dnd";
 import { useSnackbar } from "notistack";
 import { ChangeEvent, MouseEvent, useState } from "react";
-import { AiFillDelete } from "react-icons/ai";
 import useLocalStorage from "./hooks/useLocalStorage";
 import "./styles.css";
 import modalBody from "./ModalComponent";
 import AppStyles from "./styles/App";
 import FlipMove from "react-flip-move";
+import { TodosSchema } from "./hooks/useLocalStorage";
+import TodoItem from "./TodoItem";
+import { DraggableProvided, DroppableProvided } from "react-beautiful-dnd";
 
-export default function App() {
+export default function App(): JSX.Element {
+  // ! IMPORTANT
+  // ! When the user deletes an Todo at an random index,
+  // ! The dragging is messed up (not really, but it's a good idea to keep this in mind)
+  // ! Add such a system that will re-arrange the index in the order 1 - 2 - 3 - 4 - 5...
+
   const className = AppStyles();
   const { enqueueSnackbar } = useSnackbar();
   const [value, setValue] = useState<string>("");
   const [modalOpen, setModalOpen] = useState<boolean>(false);
-  const [todoContent, setTodoContent] = useState<{
-    todo: string;
-    index: number;
-  }>({
-    todo: "",
+
+  const [todoContent, setTodoContent] = useState<TodosSchema>({
+    todos: "",
     index: 0,
+    completed: false,
   });
 
-  let { todosArray, clearTodos, addTodo, deleteTodo, updateTodo } =
+  const { todosArray, clearTodos, addTodo, deleteTodo, updateTodo } =
     useLocalStorage();
 
-  const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+  const onChangeHandler = (e: ChangeEvent<HTMLInputElement>): void => {
     setValue(e.target.value);
   };
 
-  const addTodoHandler = (e: MouseEvent<HTMLButtonElement>) => {
+  const maxIndexValue = (): number => {
+    let maxIndexArray: number[] = [];
+    todosArray.map(({ index }: TodosSchema): void => {
+      maxIndexArray.push(index);
+    });
+    maxIndexArray.sort((a: number, b: number): number => b - a);
+    return maxIndexArray[0] || 0;
+  };
+
+  const addTodoHandler = (e: MouseEvent<HTMLButtonElement>): void => {
     e.preventDefault();
+
     let todoAlreadyExists: boolean = false;
-    todosArray.map((todo) => {
+    todosArray.map((todo: TodosSchema): void => {
       if (Object.values(todo).includes(value.trim())) {
         todoAlreadyExists = true;
         setValue("");
@@ -67,8 +80,9 @@ export default function App() {
       }
       if (value.trim() && !todoAlreadyExists) {
         addTodo({
-          id: todosArray.length + 1,
+          index: maxIndexValue() + 1,
           todos: value,
+          completed: false,
         });
         setValue("");
         enqueueSnackbar("Todo created!", {
@@ -84,7 +98,7 @@ export default function App() {
     }
   };
 
-  const clearTodosHandler = () => {
+  const clearTodosHandler = (): void => {
     if (todosArray.length === 0) {
       enqueueSnackbar("No todos to clear", {
         variant: "warning",
@@ -92,35 +106,32 @@ export default function App() {
       });
     } else {
       clearTodos();
-      enqueueSnackbar("Cleared all Todos", {
-        variant: "success",
-        autoHideDuration: 2000,
-      });
     }
   };
 
-  const deleteHandler = (index: number) => {
-    deleteTodo(index);
-  };
-
-  const handleModalOpen = (todo: string, index: number) => {
+  const handleModalOpen = (todo: string, completed: boolean, index: number) => {
     setModalOpen(true);
     setTodoContent({
-      todo: todo,
+      todos: todo,
       index: index,
+      completed: completed,
     });
   };
 
-  const handleModalClose = () => {
+  const handleModalClose = (): void => {
     setModalOpen(false);
   };
 
-  const handleDragEnd = (result: DropResult) => {
+  const handleDragEnd = (result: DropResult): void => {
     if (!result.destination) return;
     let items = Array.from(todosArray);
     let [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
     updateTodo({ newTodosArr: items });
+  };
+
+  const deleteHandler = (index: number): void => {
+    deleteTodo(index);
   };
 
   return (
@@ -161,47 +172,46 @@ export default function App() {
 
           <DragDropContext onDragEnd={handleDragEnd}>
             <Droppable droppableId="todos">
-              {(provided) => (
+              {(provided: DroppableProvided): JSX.Element => (
                 <List
                   className={className.listParent}
                   {...provided.droppableProps}
                   ref={provided.innerRef}
                 >
                   <FlipMove>
-                    {todosArray.map(({ todos, id }, index) => {
-                      return (
-                        <div key={index}>
-                          <Draggable
-                            draggableId={String(id)}
-                            index={index}
-                            key={id}
+                    {todosArray.map(
+                      (
+                        { todos, index, completed }: TodosSchema,
+                        index2: number
+                      ): JSX.Element => {
+                        return (
+                          <div
+                            key={index2}
+                            style={{
+                              width: "100%",
+                            }}
                           >
-                            {(provided) => (
-                              <ListItem
-                                className={className.list}
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                              >
-                                <div
-                                  onClick={() => handleModalOpen(todos, index)}
-                                  className={className.listContentWrapper}
-                                >
-                                  <ListItemText>{todos}</ListItemText>
-                                </div>
-                                <ListItemIcon
-                                  onClick={() => {
-                                    deleteHandler(index);
-                                  }}
-                                >
-                                  <AiFillDelete className={className.del} />
-                                </ListItemIcon>
-                              </ListItem>
-                            )}
-                          </Draggable>
-                        </div>
-                      );
-                    })}
+                            <Draggable
+                              draggableId={String(index)}
+                              index={index2}
+                              key={index}
+                            >
+                              {(provided: DraggableProvided): JSX.Element => (
+                                <TodoItem
+                                  todos={todos}
+                                  completed={completed}
+                                  todoArrayIndex={index2}
+                                  todoIndex={index}
+                                  provided={provided}
+                                  handleModalOpen={handleModalOpen}
+                                  deleteTodo={deleteHandler}
+                                />
+                              )}
+                            </Draggable>
+                          </div>
+                        );
+                      }
+                    )}
                   </FlipMove>
                   {provided.placeholder}
                 </List>
