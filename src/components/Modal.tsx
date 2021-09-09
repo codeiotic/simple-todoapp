@@ -6,9 +6,10 @@ import {
   useEffect,
   useState,
 } from "react";
-import useLocalStorage from "./hooks/useLocalStorage";
-import modalStyles from "./styles/Modal";
+import useLocalStorage from "../hooks/useLocalStorage";
+import modalStyles from "../styles/Modal";
 import { useSnackbar } from "notistack";
+import getTodoIndex from "../utils/getTodoIndex";
 
 export interface TodosSchema {
   index: number;
@@ -30,7 +31,7 @@ const modalBody = ({
   modalOpenBoolean,
   modalOpenBooleanValue,
 }: ModalComponentProps): JSX.Element => {
-  const classes = modalStyles();
+  const className = modalStyles();
   const [value, setValue] = useState<string>(todoState.todos);
   const [disabled, setDisabled] = useState<boolean>(true);
 
@@ -102,63 +103,31 @@ const modalBody = ({
     }
   };
 
-  const getTodoIndex = (todoIndex: number): number => {
-    return todosArray.findIndex((todo: TodosSchema): boolean => {
-      return todo.index === todoIndex;
-    });
-  };
-
   const deleteTodoHandler = (): void => {
-    deleteTodo(getTodoIndex(todoState.index));
+    deleteTodo(getTodoIndex(todoState.index, todosArray));
     modalOpenBoolean(false);
   };
 
   return (
-    <div
-      key={todoState.index}
-      className={classes.paper}
-      style={{
-        top: "50%",
-        left: "50%",
-        transform: "translate(-50%, -50%)",
-      }}
-    >
-      <div className={classes.headingContainer}>
-        <h2 className={classes.headingTitle}>Edit Todo</h2>
+    <div key={todoState.index} className={className.paper}>
+      <div className={className.headingContainer}>
+        <h2 className={className.headingTitle}>Edit Todo</h2>
       </div>
-      <Divider
-        style={{
-          marginTop: "15px",
-          marginBottom: "15px",
-          width: "100%",
-          backgroundColor: "white",
-        }}
-      />
+      <Divider className={className.divider} />
       <TextField
         autoComplete="off"
         id="Todo"
         label="Change Todo"
         value={value}
         onChange={onChangeHandler}
-        style={{
-          width: "100%",
-        }}
+        className={className.input}
       />
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "flex-start",
-          width: "100%",
-        }}
-      >
+      <div className={className.buttonContainer}>
         <Button
           variant="contained"
           color="primary"
           onClick={changeTodo}
-          style={{
-            marginTop: "20px",
-          }}
+          className={className.editButton}
           disabled={disabled}
         >
           Change Todo
@@ -166,10 +135,7 @@ const modalBody = ({
         <Button
           variant="contained"
           color="secondary"
-          style={{
-            marginTop: "20px",
-            marginLeft: "20px",
-          }}
+          className={className.deleteButton}
           onClick={deleteTodoHandler}
         >
           Delete Todo
