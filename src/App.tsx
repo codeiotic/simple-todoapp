@@ -24,11 +24,6 @@ import TodoItem from "./TodoItem";
 import { DraggableProvided, DroppableProvided } from "react-beautiful-dnd";
 
 export default function App(): JSX.Element {
-  // ! IMPORTANT
-  // ! When the user deletes an Todo at an random index,
-  // ! The dragging is messed up (not really, but it's a good idea to keep this in mind)
-  // ! Add such a system that will re-arrange the index in the order 1 - 2 - 3 - 4 - 5...
-
   const className = AppStyles();
   const { enqueueSnackbar } = useSnackbar();
   const [value, setValue] = useState<string>("");
@@ -222,8 +217,8 @@ export default function App(): JSX.Element {
         <Modal
           open={modalOpen}
           onClose={handleModalClose}
-          aria-labelledby="simple-modal-title"
-          aria-describedby="simple-modal-description"
+          aria-labelledby="Edit Todo"
+          aria-describedby="Edit Todo Modal"
           closeAfterTransition
           BackdropComponent={Backdrop}
           BackdropProps={{
@@ -240,7 +235,11 @@ export default function App(): JSX.Element {
           </Fade>
         </Modal>
       </div>
-      <img src="/assets/wave-haikei.svg" alt="" className={className.waves} />
+      <img
+        src="/assets/wave-haikei.svg"
+        alt="Waves ~~"
+        className={className.waves}
+      />
     </>
   );
 }

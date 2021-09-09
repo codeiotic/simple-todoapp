@@ -102,8 +102,14 @@ const modalBody = ({
     }
   };
 
+  const getTodoIndex = (todoIndex: number): number => {
+    return todosArray.findIndex((todo: TodosSchema): boolean => {
+      return todo.index === todoIndex;
+    });
+  };
+
   const deleteTodoHandler = (): void => {
-    deleteTodo(todoState.index);
+    deleteTodo(getTodoIndex(todoState.index));
     modalOpenBoolean(false);
   };
 
@@ -118,7 +124,7 @@ const modalBody = ({
       }}
     >
       <div className={classes.headingContainer}>
-        <h2>Edit Todo</h2>
+        <h2 className={classes.headingTitle}>Edit Todo</h2>
       </div>
       <Divider
         style={{
@@ -130,7 +136,7 @@ const modalBody = ({
       />
       <TextField
         autoComplete="off"
-        id="standard-basic"
+        id="Todo"
         label="Change Todo"
         value={value}
         onChange={onChangeHandler}
