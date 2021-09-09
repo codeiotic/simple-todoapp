@@ -16,12 +16,13 @@ import { useSnackbar } from "notistack";
 import { ChangeEvent, MouseEvent, useState } from "react";
 import useLocalStorage from "./hooks/useLocalStorage";
 import "./styles.css";
-import modalBody from "./ModalComponent";
+import modalBody from "./components/Modal";
 import AppStyles from "./styles/App";
 import FlipMove from "react-flip-move";
 import { TodosSchema } from "./hooks/useLocalStorage";
-import TodoItem from "./TodoItem";
+import TodoItem from "./components/TodoItem";
 import { DraggableProvided, DroppableProvided } from "react-beautiful-dnd";
+import maxIndexValue from "./utils/lastIndexValue";
 
 export default function App(): JSX.Element {
   const className = AppStyles();
@@ -40,15 +41,6 @@ export default function App(): JSX.Element {
 
   const onChangeHandler = (e: ChangeEvent<HTMLInputElement>): void => {
     setValue(e.target.value);
-  };
-
-  const maxIndexValue = (): number => {
-    let maxIndexArray: number[] = [];
-    todosArray.map(({ index }: TodosSchema): void => {
-      maxIndexArray.push(index);
-    });
-    maxIndexArray.sort((a: number, b: number): number => b - a);
-    return maxIndexArray[0] || 0;
   };
 
   const addTodoHandler = (e: MouseEvent<HTMLButtonElement>): void => {
@@ -75,7 +67,7 @@ export default function App(): JSX.Element {
       }
       if (value.trim() && !todoAlreadyExists) {
         addTodo({
-          index: maxIndexValue() + 1,
+          index: maxIndexValue(todosArray) + 1,
           todos: value,
           completed: false,
         });
@@ -182,9 +174,7 @@ export default function App(): JSX.Element {
                         return (
                           <div
                             key={index2}
-                            style={{
-                              width: "100%",
-                            }}
+                            className={className.listContentWrapper}
                           >
                             <Draggable
                               draggableId={String(index)}

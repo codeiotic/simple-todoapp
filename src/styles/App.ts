@@ -67,41 +67,8 @@ const AppStyles = makeStyles((theme: Theme) =>
       fontSize: "1.1rem",
       paddingBottom: "60px",
     },
-    list: {
-      "&:first-child": {
-        borderTop: "1px solid white",
-      },
-      "&:hover": {
-        "& svg": {
-          display: "flex !important",
-        },
-      },
-      marginTop: "10px",
-      boxShadow: theme.shadows[24],
-      borderRadius: "5px",
-      listStyleType: "none",
-      border: "1px solid white",
-      borderTop: "none",
-      width: "95%",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "space-between",
-      height: "50px",
-      padding: "15px",
-      cursor: "pointer",
-      minWidth: "300px",
-      maxWidth: "800px",
-    },
     listContentWrapper: {
-      flex: "1",
-    },
-    del: {
-      fontSize: "19px !important",
-      cursor: "pointer !important",
-      color: "red",
-      "&:hover": {
-        color: "darkred !important",
-      },
+      width: "100%",
     },
     waves: {
       backgroundColor: "#002233",
@@ -112,24 +79,6 @@ const AppStyles = makeStyles((theme: Theme) =>
       position: "absolute",
       left: "0",
       right: "0",
-    },
-    menu: {
-      "& .MuiPaper-root": {
-        backgroundColor: "black",
-        borderRadius: 6,
-        marginTop: theme.spacing(1),
-        minWidth: 180,
-        boxShadow:
-          "rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px",
-        "& .MuiMenu-list": {
-          padding: 0,
-        },
-        "& .MuiListItem-root": {
-          "&:hover": {
-            backgroundColor: "#232323",
-          },
-        },
-      },
     },
   })
 );
