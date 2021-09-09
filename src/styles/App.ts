@@ -1,4 +1,4 @@
-import { Theme } from "@material-ui/core";
+import { Theme, useMediaQuery } from "@material-ui/core";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 
 const AppStyles = makeStyles((theme: Theme) =>
@@ -96,16 +96,15 @@ const AppStyles = makeStyles((theme: Theme) =>
       flex: "1",
     },
     del: {
-      display: "none",
       fontSize: "19px !important",
       cursor: "pointer !important",
-      marginLeft: "20px",
       color: "red",
       "&:hover": {
         color: "darkred !important",
       },
     },
     waves: {
+      backgroundColor: "#002233",
       height: "auto",
       maxWidth: "100%",
       minWidth: "100%",
@@ -113,6 +112,24 @@ const AppStyles = makeStyles((theme: Theme) =>
       position: "absolute",
       left: "0",
       right: "0",
+    },
+    menu: {
+      "& .MuiPaper-root": {
+        backgroundColor: "black",
+        borderRadius: 6,
+        marginTop: theme.spacing(1),
+        minWidth: 180,
+        boxShadow:
+          "rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px",
+        "& .MuiMenu-list": {
+          padding: 0,
+        },
+        "& .MuiListItem-root": {
+          "&:hover": {
+            backgroundColor: "#232323",
+          },
+        },
+      },
     },
   })
 );
