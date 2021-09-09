@@ -11,11 +11,14 @@ const modalStyles = makeStyles((theme: Theme) =>
       padding: theme.spacing(2, 4, 3),
       outline: "none",
       display: "flex",
-      alignItems: "center",
+      alignItems: "flex-start",
       justifyContent: "flex-start",
       flexDirection: "column",
       borderRadius: "10px",
       fontFamily: "Roboto",
+      top: "50%",
+      left: "50%",
+      transform: "translate(-50%, -50%)",
     },
     headingContainer: {
       display: "flex",
@@ -25,6 +28,28 @@ const modalStyles = makeStyles((theme: Theme) =>
       fontSize: "12px",
     },
     headingTitle: {
+      marginTop: "20px",
+    },
+    divider: {
+      marginTop: "15px",
+      marginBottom: "15px",
+      width: "100%",
+      backgroundColor: "white",
+    },
+    input: {
+      width: "50%",
+    },
+    buttonContainer: {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "flex-start",
+      width: "100%",
+    },
+    deleteButton: {
+      marginTop: "20px",
+      marginLeft: "20px",
+    },
+    editButton: {
       marginTop: "20px",
     },
   })
