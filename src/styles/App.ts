@@ -6,6 +6,7 @@ const AppStyles = makeStyles((theme: Theme) =>
     parent: {
       backgroundColor: "#002233",
       minHeight: "70vh",
+      width: "100%",
     },
     main: {
       color: "white",
@@ -16,6 +17,7 @@ const AppStyles = makeStyles((theme: Theme) =>
       alignItems: "center",
       justifyContent: "center",
       flexDirection: "column",
+      width: "100%",
     },
     form: {
       display: "flex",
@@ -39,7 +41,7 @@ const AppStyles = makeStyles((theme: Theme) =>
       marginBottom: "15px",
       width: "140px",
       maxWidth: "34%",
-      minWidth: "32%",
+      minWidth: "120px",
       height: "fit-content",
       outline: "none",
       borderRadius: "5px",
@@ -63,12 +65,14 @@ const AppStyles = makeStyles((theme: Theme) =>
       flexDirection: "column",
       alignItems: "center",
       justifyContent: "center",
-      width: "100%",
+      width: "90%",
       fontSize: "1.1rem",
       paddingBottom: "60px",
     },
     listContentWrapper: {
-      width: "100%",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
     },
     waves: {
       backgroundColor: "#002233",
