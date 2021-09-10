@@ -1,3 +1,4 @@
+import { ChangeEvent, MouseEvent, useState } from "react";
 import {
   Backdrop,
   Button,
@@ -13,23 +14,22 @@ import {
   DropResult,
 } from "react-beautiful-dnd";
 import { useSnackbar } from "notistack";
-import { ChangeEvent, MouseEvent, useState } from "react";
-import useLocalStorage from "./hooks/useLocalStorage";
-import "./styles.css";
-import modalBody from "./components/Modal";
-import AppStyles from "./styles/App";
-import FlipMove from "react-flip-move";
 import { TodosSchema } from "./hooks/useLocalStorage";
-import TodoItem from "./components/TodoItem";
 import { DraggableProvided, DroppableProvided } from "react-beautiful-dnd";
+import FlipMove from "react-flip-move";
+import TodoItem from "./components/TodoItem";
+import modalBody from "./components/Modal";
+import useLocalStorage from "./hooks/useLocalStorage";
 import maxIndexValue from "./utils/lastIndexValue";
+import validateTodo from "./utils/validate";
+import AppStyles from "./styles/App";
+import "./styles.css";
 
 export default function App(): JSX.Element {
   const className = AppStyles();
   const { enqueueSnackbar } = useSnackbar();
   const [value, setValue] = useState<string>("");
   const [modalOpen, setModalOpen] = useState<boolean>(false);
-
   const [todoContent, setTodoContent] = useState<TodosSchema>({
     todos: "",
     index: 0,
@@ -46,42 +46,18 @@ export default function App(): JSX.Element {
   const addTodoHandler = (e: MouseEvent<HTMLButtonElement>): void => {
     e.preventDefault();
 
-    let todoAlreadyExists: boolean = false;
-    todosArray.map((todo: TodosSchema): void => {
-      if (Object.values(todo).includes(value.trim())) {
-        todoAlreadyExists = true;
-        setValue("");
-        enqueueSnackbar(`"${value}" is already in the list`, {
-          variant: "error",
-        });
-      }
-    });
-    if (!todoAlreadyExists) {
-      if (value.trim().length >= 30) {
-        enqueueSnackbar("Please enter todos which are less than 30 letters", {
-          variant: "warning",
-          autoHideDuration: 2000,
-        });
-        setValue("");
-        return;
-      }
-      if (value.trim() && !todoAlreadyExists) {
-        addTodo({
-          index: maxIndexValue(todosArray) + 1,
-          todos: value,
-          completed: false,
-        });
-        setValue("");
-        enqueueSnackbar("Todo created!", {
-          variant: "success",
-          autoHideDuration: 2000,
-        });
-      } else {
-        enqueueSnackbar("Please enter text to add a Todo", {
-          variant: "warning",
-          autoHideDuration: 2000,
-        });
-      }
+    let { errors, valid } = validateTodo(value, todosArray);
+
+    if (valid) {
+      addTodo({
+        index: maxIndexValue(todosArray) + 1,
+        todos: value,
+        completed: false,
+      });
+      setValue("");
+    } else {
+      enqueueSnackbar(errors[0], { variant: "error" });
+      setValue("");
     }
   };
 
@@ -96,7 +72,11 @@ export default function App(): JSX.Element {
     }
   };
 
-  const handleModalOpen = (todo: string, completed: boolean, index: number) => {
+  const handleModalOpen = (
+    todo: string,
+    completed: boolean,
+    index: number
+  ): void => {
     setModalOpen(true);
     setTodoContent({
       todos: todo,

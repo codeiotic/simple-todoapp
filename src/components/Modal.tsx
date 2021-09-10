@@ -6,20 +6,14 @@ import {
   useEffect,
   useState,
 } from "react";
-import useLocalStorage from "../hooks/useLocalStorage";
+import useLocalStorage, { TodosSchema } from "../hooks/useLocalStorage";
 import modalStyles from "../styles/Modal";
 import { useSnackbar } from "notistack";
 import getTodoIndex from "../utils/getTodoIndex";
+import validateTodo from "../utils/validate";
 
-export interface TodosSchema {
-  index: number;
-  todos: string;
-}
 export interface ModalComponentProps {
-  todoState: {
-    todos: string;
-    index: number;
-  };
+  todoState: TodosSchema;
   todosArray: TodosSchema[];
   modalOpenBoolean: Dispatch<SetStateAction<boolean>>;
   modalOpenBooleanValue: boolean;
@@ -48,30 +42,15 @@ const modalBody = ({
   }, [modalOpenBooleanValue]);
 
   const changeTodo = (): void => {
-    if (value.length >= 30) {
-      enqueueSnackbar("Todo must be less than 30 characters", {
-        variant: "error",
-      });
-      setValue(todoState.todos);
-      return;
-    }
     let localTodosArray = todosArray;
 
-    let todoAlreadyExists: boolean = false;
-    localTodosArray.map((todo: TodosSchema): void => {
-      localTodosArray.sort((a: TodosSchema, b: TodosSchema): number => {
-        return a.index - b.index;
-      });
-      if (Object.values(todo).indexOf(value) > -1) {
-        todoAlreadyExists = true;
-        setValue(todoState.todos);
-        enqueueSnackbar(`"${value}" is already in the list`, {
-          variant: "error",
-        });
-      }
+    localTodosArray.sort((a: TodosSchema, b: TodosSchema): number => {
+      return a.index - b.index;
     });
 
-    if (!todoAlreadyExists) {
+    let { errors, valid } = validateTodo(value, localTodosArray);
+
+    if (valid) {
       localTodosArray.map(({ index }: TodosSchema): void => {
         if (index === todoState.index) {
           updateTodo({
@@ -85,6 +64,9 @@ const modalBody = ({
         }
       });
       modalOpenBoolean(false);
+    } else {
+      setValue(todoState.todos);
+      enqueueSnackbar(errors, { variant: "error" });
     }
   };
   const onChangeHandler = (e: ChangeEvent<HTMLInputElement>): void => {
