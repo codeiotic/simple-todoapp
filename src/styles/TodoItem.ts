@@ -4,9 +4,6 @@ import { createStyles, makeStyles } from "@material-ui/core/styles";
 const TodoItemStyles = makeStyles((theme: Theme) =>
   createStyles({
     list: {
-      "&:first-child": {
-        borderTop: "1px solid white",
-      },
       "&:hover": {
         "& svg": {
           display: "flex !important",
@@ -17,7 +14,6 @@ const TodoItemStyles = makeStyles((theme: Theme) =>
       borderRadius: "5px",
       listStyleType: "none",
       border: "1px solid white",
-      borderTop: "none",
       width: "95%",
       display: "flex",
       alignItems: "center",

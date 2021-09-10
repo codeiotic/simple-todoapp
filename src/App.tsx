@@ -145,7 +145,7 @@ export default function App(): JSX.Element {
                   {...provided.droppableProps}
                   ref={provided.innerRef}
                 >
-                  <FlipMove>
+                  <FlipMove style={{ width: "100%" }}>
                     {todosArray.map(
                       (
                         { todos, index, completed }: TodosSchema,
