@@ -59,7 +59,7 @@ const modalBody = ({
               index: index,
               todos: value,
               completed: completed,
-              time: moment().format("LLLL"),
+              time: new Date().toISOString(),
             },
             index: index,
           });
