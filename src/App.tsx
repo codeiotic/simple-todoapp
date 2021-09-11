@@ -6,6 +6,7 @@ import {
   List,
   Modal,
   TextField,
+  useMediaQuery,
 } from "@material-ui/core";
 import {
   DragDropContext,
@@ -24,6 +25,7 @@ import maxIndexValue from "./utils/lastIndexValue";
 import validateTodo from "./utils/validate";
 import AppStyles from "./styles/App";
 import "./styles.css";
+import moment from "moment";
 
 export default function App(): JSX.Element {
   const className = AppStyles();
@@ -34,6 +36,7 @@ export default function App(): JSX.Element {
     todos: "",
     index: 0,
     completed: false,
+    time: "",
   });
 
   const { todosArray, clearTodos, addTodo, deleteTodo, updateTodo } =
@@ -53,6 +56,7 @@ export default function App(): JSX.Element {
         index: maxIndexValue(todosArray) + 1,
         todos: value,
         completed: false,
+        time: moment().format("LLLL"),
       });
       setValue("");
     } else {
@@ -75,13 +79,15 @@ export default function App(): JSX.Element {
   const handleModalOpen = (
     todo: string,
     completed: boolean,
-    index: number
+    index: number,
+    time: string
   ): void => {
     setModalOpen(true);
     setTodoContent({
       todos: todo,
       index: index,
       completed: completed,
+      time: time,
     });
   };
 
@@ -148,7 +154,7 @@ export default function App(): JSX.Element {
                   <FlipMove style={{ width: "100%" }}>
                     {todosArray.map(
                       (
-                        { todos, index, completed }: TodosSchema,
+                        { todos, index, completed, time }: TodosSchema,
                         index2: number
                       ): JSX.Element => {
                         return (
@@ -163,6 +169,7 @@ export default function App(): JSX.Element {
                             >
                               {(provided: DraggableProvided): JSX.Element => (
                                 <TodoItem
+                                  time={time}
                                   todos={todos}
                                   completed={completed}
                                   todoArrayIndex={index2}

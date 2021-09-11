@@ -52,6 +52,11 @@ const modalStyles = makeStyles((theme: Theme) =>
     editButton: {
       marginTop: "20px",
     },
+    time: {
+      fontSize: "0.9rem",
+      color: "lightgray",
+      marginTop: "20px",
+    },
   })
 );
 

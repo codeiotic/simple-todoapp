@@ -60,6 +60,14 @@ const TodoItemStyles = makeStyles((theme: Theme) =>
       fontSize: "19px",
       cursor: "pointer",
     },
+    time: {
+      "& span": {
+        textAlign: "right",
+        fontSize: "0.9rem",
+        fontWeight: "normal",
+        color: "lightgray",
+      },
+    },
   })
 );
 

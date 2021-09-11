@@ -15,14 +15,21 @@ import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 import { MouseEvent, useState } from "react";
 import TodoItemStyles from "../styles/TodoItem";
 import truncate from "../utils/truncate";
+import moment from "moment";
 
 export interface ListItemProps {
   todos: string;
   todoIndex: number;
   completed: boolean;
   todoArrayIndex: number;
+  time: string;
   provided: DraggableProvided;
-  handleModalOpen: (todo: string, completed: boolean, index: number) => void;
+  handleModalOpen: (
+    todo: string,
+    completed: boolean,
+    index: number,
+    time: string
+  ) => void;
   deleteTodo: (index: number) => void;
 }
 
@@ -34,6 +41,7 @@ const TodoItem = ({
   provided,
   handleModalOpen,
   deleteTodo,
+  time,
 }: ListItemProps): JSX.Element => {
   const { todosArray } = useLocalStorage();
   const className = TodoItemStyles();
@@ -58,11 +66,16 @@ const TodoItem = ({
     >
       <ListItemText
         id={String(todoIndex)}
-        onClick={(): void => handleModalOpen(todos, completed, todoIndex)}
+        onClick={(): void => handleModalOpen(todos, completed, todoIndex, time)}
       >
         {todosArray[todoIndex - 1]?.completed
           ? ReactHtmlParser(truncate(todos.strike()))
           : truncate(todos)}
+      </ListItemText>
+      <ListItemText className={className.time}>
+        {time
+          ? moment(time).fromNow(!matches)
+          : "Please clear all todos to see the time"}
       </ListItemText>
       <ListItemIcon>
         <Button className={className.menuButton} onClick={handleMenuOpen}>
@@ -86,7 +99,7 @@ const TodoItem = ({
           <MenuItem
             onClick={(): void => {
               handleMenuClose();
-              handleModalOpen(todos, completed, todoIndex);
+              handleModalOpen(todos, completed, todoIndex, time);
             }}
           >
             Edit
