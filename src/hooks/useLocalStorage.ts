@@ -5,6 +5,7 @@ export interface TodosSchema {
   index: number;
   todos: string;
   completed: boolean;
+  time: string;
 }
 export interface UpdateTodoProps {
   newTodosArr?: TodosSchema[];
@@ -145,6 +146,8 @@ function useLocalStorage(): ReturnInterface {
       todos.map((todo: TodosSchema): void => {
         if (todo.index === index) {
           todo.todos = content.todos;
+          todo.time = content.time;
+          todo.completed = content.completed;
         }
       });
       enqueueSnackbar("Todo Updated!", {

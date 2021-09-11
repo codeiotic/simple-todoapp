@@ -11,6 +11,7 @@ import modalStyles from "../styles/Modal";
 import { useSnackbar } from "notistack";
 import getTodoIndex from "../utils/getTodoIndex";
 import validateTodo from "../utils/validate";
+import moment from "moment";
 
 export interface ModalComponentProps {
   todoState: TodosSchema;
@@ -51,13 +52,14 @@ const modalBody = ({
     let { errors, valid } = validateTodo(value, localTodosArray);
 
     if (valid) {
-      localTodosArray.map(({ index }: TodosSchema): void => {
+      localTodosArray.map(({ index, completed, time }: TodosSchema): void => {
         if (index === todoState.index) {
           updateTodo({
             content: {
               index: index,
               todos: value,
-              completed: false,
+              completed: completed,
+              time: moment().format("LLLL"),
             },
             index: index,
           });
@@ -122,6 +124,11 @@ const modalBody = ({
         >
           Delete Todo
         </Button>
+      </div>
+      <div className={className.time}>
+        {todoState.time
+          ? `Last edited: ${moment(todoState.time).fromNow()}`
+          : "Please clear all todos to see the last edited time"}
       </div>
     </div>
   );
