@@ -56,7 +56,7 @@ export default function App(): JSX.Element {
         index: maxIndexValue(todosArray) + 1,
         todos: value,
         completed: false,
-        time: moment().format("LLLL"),
+        time: new Date().toISOString(),
       });
       setValue("");
     } else {

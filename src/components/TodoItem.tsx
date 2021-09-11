@@ -12,7 +12,7 @@ import { DraggableProvided } from "react-beautiful-dnd";
 import useLocalStorage from "../hooks/useLocalStorage";
 import ReactHtmlParser from "react-html-parser";
 import { FiChevronDown, FiChevronUp } from "react-icons/fi";
-import { MouseEvent, useState } from "react";
+import { MouseEvent, useEffect, useState } from "react";
 import TodoItemStyles from "../styles/TodoItem";
 import truncate from "../utils/truncate";
 import moment from "moment";
@@ -39,13 +39,15 @@ const TodoItem = ({
   todoIndex,
   todoArrayIndex,
   provided,
+  time,
   handleModalOpen,
   deleteTodo,
-  time,
 }: ListItemProps): JSX.Element => {
   const { todosArray } = useLocalStorage();
   const className = TodoItemStyles();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [updatedTime, setUpdatedTime] = useState(moment(time).fromNow());
+
   let menuOpen = Boolean(anchorEl);
   const matches = useMediaQuery("(min-width:600px)");
 
@@ -56,6 +58,16 @@ const TodoItem = ({
   const handleMenuOpen = (e: MouseEvent<HTMLButtonElement>): void => {
     setAnchorEl(e.currentTarget);
   };
+
+  useEffect((): (() => void) => {
+    let handle = setInterval((): void => {
+      setUpdatedTime(moment(time).fromNow());
+    }, 10000);
+
+    return (): void => {
+      clearInterval(handle);
+    };
+  }, []);
 
   return (
     <ListItem
@@ -72,9 +84,11 @@ const TodoItem = ({
           ? ReactHtmlParser(truncate(todos.strike()))
           : truncate(todos)}
       </ListItemText>
-      <ListItemText className={className.time}>
+      <ListItemText className={className.time} id="time">
         {time
-          ? moment(time).fromNow(!matches)
+          ? window.innerWidth <= 600
+            ? updatedTime.slice(0, -4)
+            : updatedTime
           : "Please clear all todos to see the time"}
       </ListItemText>
       <ListItemIcon>

@@ -63,7 +63,7 @@ const TodoItemStyles = makeStyles((theme: Theme) =>
     time: {
       "& span": {
         textAlign: "right",
-        fontSize: "0.9rem",
+        fontSize: "0.8rem",
         fontWeight: "normal",
         color: "lightgray",
       },
