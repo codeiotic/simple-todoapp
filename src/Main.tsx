@@ -3,12 +3,14 @@ import App from "./App";
 import LogIn from "./components/Login";
 import SignUp from "./components/SignUp";
 import Home from "./components/Home";
+import Header from "./components/Header";
 
 const Main = (): JSX.Element => {
   return (
     <Router>
+      <Header />
       <Switch>
-        <Route path="/signUp">
+        <Route path="/sign-up">
           <SignUp />
         </Route>
         <Route path="/login">
