@@ -1,13 +1,15 @@
-- [x] Add the notifications in the hook only, to simplify stuff.
-
-- [x] Fix background color for the Modal.
-
-- [x] Fix delete-animations for the Todo List.
-
-- [ ] Fix some more styling.
-
-- [ ] Add more editing options for the modal.
-
-- [ ] Create Light Theme & Dark Theme.
-
 - [ ] Mark Todos as completed
+
+- [ ] Add an description field to the Todos.
+
+- [ ] Use Supabase as the backend service provider.
+
+- [ ] Add user Login and Logout functionality.
+
+- [ ] Create the user in Supabase, and add various login provider (Google, Github & more).
+
+- [ ] Add the todos to the database (no more localStorage!).
+
+- [ ] Create a new custom hook for database operations.
+
+- [ ] Use `react-query` for fetching data
