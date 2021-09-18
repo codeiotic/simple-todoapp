@@ -25,7 +25,6 @@ import maxIndexValue from "./utils/lastIndexValue";
 import validateTodo from "./utils/validate";
 import AppStyles from "./styles/App";
 import "./styles.css";
-import moment from "moment";
 
 export default function App(): JSX.Element {
   const className = AppStyles();
