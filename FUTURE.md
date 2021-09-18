@@ -2,6 +2,8 @@
 
 - [ ] Add an description field to the Todos.
 
+- [ ] Setup Routing with `react-router`
+
 - [ ] Use Supabase as the backend service provider.
 
 - [ ] Add user Login and Logout functionality.

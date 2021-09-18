@@ -1,4 +1,4 @@
-import { Theme, useMediaQuery } from "@material-ui/core";
+import { Theme } from "@material-ui/core";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 
 const AppStyles = makeStyles((theme: Theme) =>
