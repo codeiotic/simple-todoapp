@@ -1,12 +1,12 @@
 import { SnackbarProvider } from "notistack";
 import { render } from "react-dom";
-import App from "./App";
+import Main from "./Main";
 
 const rootElement = document.getElementById("root");
 
 render(
   <SnackbarProvider maxSnack={1} autoHideDuration={2000}>
-    <App />
+    <Main />
   </SnackbarProvider>,
   rootElement
 );
