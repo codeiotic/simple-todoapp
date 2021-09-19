@@ -1,4 +1,4 @@
-import { ChangeEvent, MouseEvent, useState } from "react";
+import { ChangeEvent, MouseEvent, useContext, useState } from "react";
 import {
   Backdrop,
   Button,
@@ -6,7 +6,6 @@ import {
   List,
   Modal,
   TextField,
-  useMediaQuery,
 } from "@material-ui/core";
 import {
   DragDropContext,
@@ -23,11 +22,13 @@ import modalBody from "./Modal";
 import useLocalStorage from "../hooks/useLocalStorage";
 import maxIndexValue from "../utils/lastIndexValue";
 import validateTodo from "../utils/validate";
-import AppStyles from "../styles/App";
+import MainStyles from "../styles/Main";
 import "../styles.css";
+import UserContext from "../hooks/userContext";
+import { useHistory } from "react-router";
 
 export default function Main(): JSX.Element {
-  const className = AppStyles();
+  const className = MainStyles();
   const { enqueueSnackbar } = useSnackbar();
   const [value, setValue] = useState<string>("");
   const [modalOpen, setModalOpen] = useState<boolean>(false);
@@ -37,6 +38,8 @@ export default function Main(): JSX.Element {
     completed: false,
     time: "",
   });
+  const location = useHistory();
+  const { user } = useContext(UserContext);
 
   const { todosArray, clearTodos, addTodo, deleteTodo, updateTodo } =
     useLocalStorage();
@@ -106,6 +109,10 @@ export default function Main(): JSX.Element {
     deleteTodo(index);
   };
 
+  if (!(user && user !== {})) {
+    location.goBack();
+  }
+
   return (
     <>
       <div className={className.parent}>
@@ -120,7 +127,6 @@ export default function Main(): JSX.Element {
               fullWidth
               className={className.input}
             />
-
             <Button
               variant="contained"
               color="primary"
@@ -130,7 +136,6 @@ export default function Main(): JSX.Element {
             >
               Add
             </Button>
-
             <Button
               className={className.button}
               variant="contained"
