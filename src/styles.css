@@ -31,3 +31,9 @@ label {
 .MuiInputBase-input {
   color: white !important;
 }
+
+div[aria-busy="true"] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
