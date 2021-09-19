@@ -1,14 +1,37 @@
 import { Button, Divider, Switch, TextField } from "@material-ui/core";
-import { ChangeEvent, useState } from "react";
+import { useSnackbar } from "notistack";
+import { ChangeEvent, MouseEvent, useState } from "react";
 import { Link } from "react-router-dom";
+import { supabase } from "../db/supabaseClient";
 import SignUpStyles from "../styles/SignUp";
 
 const SignUp = (): JSX.Element => {
   const classNames = SignUpStyles();
-  const signUpUser = (): void => {};
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [checked, setChecked] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const { enqueueSnackbar } = useSnackbar();
+
+  const signUpUser = async (e: MouseEvent): Promise<void> => {
+    e.preventDefault();
+    try {
+      setLoading(true);
+      const { user, session, error } = await supabase.auth.signUp({
+        email: email,
+        password: password,
+      });
+      if (error) {
+        enqueueSnackbar(error.message);
+      }
+      enqueueSnackbar("Check your email for magic link!");
+    } catch (error) {
+      console.log(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const clear = (): void => {
     setEmail("");

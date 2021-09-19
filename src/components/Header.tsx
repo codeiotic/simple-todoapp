@@ -7,11 +7,13 @@ const Header = () => {
   return (
     <header className={classNames.header}>
       <div className={classNames.imgParent}>
-        <img
-          src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg"
-          alt="React Logo"
-          className={classNames.img}
-        />
+        <Link to="/">
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg"
+            alt="React Logo"
+            className={classNames.img}
+          />
+        </Link>
       </div>
       <nav>
         <div className={classNames.linkParent}>

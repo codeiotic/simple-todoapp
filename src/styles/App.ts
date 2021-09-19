@@ -7,6 +7,7 @@ const AppStyles = makeStyles((theme: Theme) =>
       backgroundColor: "#002233",
       minHeight: "70vh",
       width: "100%",
+      marginTop: "60px",
     },
     main: {
       color: "white",

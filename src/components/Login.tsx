@@ -1,14 +1,39 @@
 import { Button, Divider, Switch, TextField } from "@material-ui/core";
-import { ChangeEvent, useState } from "react";
+import { useSnackbar } from "notistack";
+import { ChangeEvent, MouseEvent, useContext, useState } from "react";
 import { Link } from "react-router-dom";
+import { supabase } from "../db/supabaseClient";
+import UserContext from "../hooks/userContext";
 import LogInStyles from "../styles/Login";
 
 const LogIn = (): JSX.Element => {
   const classNames = LogInStyles();
-  const logInUser = () => {};
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [checked, setChecked] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const { enqueueSnackbar } = useSnackbar();
+
+  const logInUser = async (e: MouseEvent): Promise<void> => {
+    e.preventDefault();
+    try {
+      setLoading(true);
+      const { data, error, session, user } = await supabase.auth.signIn({
+        email,
+        password,
+      });
+      console.log(data, session, user);
+      if (error) {
+        enqueueSnackbar(error.message);
+      }
+      enqueueSnackbar("Logged in as " + user.email);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const clear = () => {
     setEmail("");

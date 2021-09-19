@@ -13,6 +13,9 @@ const HeaderStyles = makeStyles((theme: Theme) =>
       alignItems: "center",
       justifyContent: "space-between",
       backgroundColor: "#002233",
+      zIndex: 100,
+      // boxShadow: "-1px 24px 31px -15px rgba(0,0,0,0.75)",
+      boxShadow: theme.shadows[10],
     },
     imgParent: {
       width: "15%",
