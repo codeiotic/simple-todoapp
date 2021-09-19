@@ -1,5 +1,5 @@
 import { useSnackbar } from "notistack";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export interface TodosSchema {
   index: number;
@@ -37,18 +37,6 @@ function useLocalStorage(): ReturnInterface {
   const { enqueueSnackbar } = useSnackbar();
   const [todosArray, setTodos] = useState<TodosSchema[]>([]);
   let todos: TodosSchema[] = todosArray;
-  let localStorageTodos = localStorage.getItem("todos");
-
-  useEffect((): void => {
-    if (localStorageTodos) {
-      setTodos(JSON.parse(localStorageTodos));
-      todos = JSON.parse(localStorageTodos);
-    }
-  }, [localStorageTodos]);
-
-  useEffect((): void => {
-    todos = todosArray;
-  }, [todosArray]);
 
   /**
    * @function
