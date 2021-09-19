@@ -2,7 +2,7 @@ import { Session } from "@supabase/gotrue-js";
 import { createContext } from "react";
 
 export interface UserContextInterface {
-  user: {} | Session;
+  user: Session | {};
 }
 
 const UserContext = createContext<UserContextInterface>({

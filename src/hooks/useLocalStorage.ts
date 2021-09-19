@@ -149,6 +149,7 @@ function useLocalStorage(): ReturnInterface {
           todo.time = content.time;
           todo.completed = content.completed;
         }
+        return null;
       });
       enqueueSnackbar("Todo Updated!", {
         variant: "success",

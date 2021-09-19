@@ -32,6 +32,7 @@ const validateTodo = (
       valid = false;
       errors.push(`"${value}" is already in the list`);
     }
+    return null;
   });
 
   if (!todoAlreadyExists) {

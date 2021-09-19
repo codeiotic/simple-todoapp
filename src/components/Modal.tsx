@@ -26,6 +26,7 @@ const modalBody = ({
   modalOpenBoolean,
   modalOpenBooleanValue,
 }: ModalComponentProps): JSX.Element => {
+  /* eslint-disable */
   const className = modalStyles();
   const [value, setValue] = useState<string>(todoState.todos);
   const [disabled, setDisabled] = useState<boolean>(true);
