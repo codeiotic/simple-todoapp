@@ -1,7 +1,7 @@
 import { Theme } from "@material-ui/core";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 
-const AppStyles = makeStyles((theme: Theme) =>
+const MainStyles = makeStyles((theme: Theme) =>
   createStyles({
     parent: {
       backgroundColor: "#002233",
@@ -88,4 +88,4 @@ const AppStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default AppStyles;
+export default MainStyles;
