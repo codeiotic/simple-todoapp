@@ -40,6 +40,9 @@ const LogInStyles = makeStyles((theme: Theme) =>
       "&:hover": {
         backgroundColor: "#5ed8ff",
       },
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
     },
     secondaryButton: {
       border: "1px solid white",
