@@ -1,22 +1,26 @@
 import { TextField } from "@material-ui/core";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useHistory } from "react-router";
-import UserContext, { UserContextInterface } from "../hooks/userContext";
+import { supabase } from "../db/supabaseClient";
+import UserContext from "../hooks/userContext";
 import SettingsStyles from "../styles/Settings";
 
 const Settings = (): JSX.Element => {
-  const [email, setEmail] = useState<string>("");
+  const supabaseUser = supabase.auth.user();
+  const [email, setEmail] = useState<string>(supabaseUser?.email);
   const [password, setPassword] = useState<string>("");
   const classNames = SettingsStyles();
   const location = useHistory();
 
+  useEffect((): void => {
+    if (!supabaseUser?.email) {
+      location.push("/login");
+    }
+  }, [supabaseUser, location]);
+
   return (
     <UserContext.Consumer>
-      {({ user }: UserContextInterface): JSX.Element => {
-        // console.log(!(!user && user === {}));
-        if (!(!user && user === {})) {
-          location.goBack();
-        }
+      {(): JSX.Element => {
         return (
           <div className={classNames.parent}>
             <TextField

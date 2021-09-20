@@ -4,7 +4,7 @@ import { useState } from "react";
 import Loader from "react-loader-spinner";
 import { Link, useHistory } from "react-router-dom";
 import { supabase } from "../db/supabaseClient";
-import UserContext, { UserContextInterface } from "../hooks/userContext";
+import UserContext from "../hooks/userContext";
 import HeaderStyles from "../styles/Header";
 
 const Header = (): JSX.Element => {
@@ -12,6 +12,7 @@ const Header = (): JSX.Element => {
   const classNames = HeaderStyles();
   const { enqueueSnackbar } = useSnackbar();
   const location = useHistory();
+  const supabaseUser = supabase.auth.user();
 
   const signOutUser = async (): Promise<void> => {
     setLoading(true);
@@ -25,7 +26,7 @@ const Header = (): JSX.Element => {
 
   return (
     <UserContext.Consumer>
-      {({ user }: UserContextInterface): JSX.Element => (
+      {(): JSX.Element => (
         <header className={classNames.header}>
           <div className={classNames.imgParent}>
             <Link to="/">
@@ -38,7 +39,7 @@ const Header = (): JSX.Element => {
           </div>
           <nav>
             <div className={classNames.linkParent}>
-              {user && user !== {} ? (
+              {supabaseUser?.email ? (
                 <>
                   <Button
                     variant="contained"

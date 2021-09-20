@@ -1,12 +1,12 @@
 import { Button, Divider, Switch, TextField } from "@material-ui/core";
 import { useSnackbar } from "notistack";
-import { ChangeEvent, MouseEvent, useState } from "react";
+import { ChangeEvent, MouseEvent, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "../db/supabaseClient";
 import LogInStyles from "../styles/Login";
 import { useHistory } from "react-router-dom";
 import Loader from "react-loader-spinner";
-import UserContext, { UserContextInterface } from "../hooks/userContext";
+import UserContext from "../hooks/userContext";
 
 const LogIn = (): JSX.Element => {
   const classNames = LogInStyles();
@@ -16,20 +16,25 @@ const LogIn = (): JSX.Element => {
   const [loading, setLoading] = useState<boolean>(false);
   let location = useHistory();
   const { enqueueSnackbar } = useSnackbar();
+  const supabaseUser = supabase.auth.user();
 
   const logInUser = async (e: MouseEvent): Promise<void> => {
     e.preventDefault();
-    setLoading(true);
-    let { error, user } = await supabase.auth.signIn({
-      email,
-      password,
-    });
-    if (error) {
-      enqueueSnackbar(error.message, { variant: "error" });
+    try {
+      setLoading(true);
+      let { error, user } = await supabase.auth.signIn({
+        email,
+        password,
+      });
+      if (error) {
+        enqueueSnackbar(error.message, { variant: "error" });
+      }
+      enqueueSnackbar("Logged in as " + user.email, { variant: "success" });
+    } catch (error) {
+    } finally {
+      setLoading(false);
+      location.push("/home");
     }
-    enqueueSnackbar("Logged in as " + user.email, { variant: "success" });
-    setLoading(false);
-    location.push("/home");
   };
 
   const clear = (): void => {
@@ -38,12 +43,15 @@ const LogIn = (): JSX.Element => {
     setChecked(false);
   };
 
+  useEffect((): void => {
+    if (supabaseUser?.email) {
+      location.push("/home");
+    }
+  }, [supabaseUser, location]);
+
   return (
     <UserContext.Consumer>
-      {({ user }: UserContextInterface): JSX.Element => {
-        if (user && user !== {}) {
-          location.goBack();
-        }
+      {(): JSX.Element => {
         return (
           <div className={classNames.parent}>
             <h1 className={classNames.heading}>Log In</h1>

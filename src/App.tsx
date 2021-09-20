@@ -11,9 +11,7 @@ import UserContext, { UserContextInterface } from "./hooks/userContext";
 import Settings from "./components/Settings";
 
 const App = (): JSX.Element => {
-  const [userState, setUserState] = useState<UserContextInterface>({
-    user: {},
-  });
+  const [userState, setUserState] = useState({});
 
   useEffect((): (() => void) => {
     setUserState({
@@ -34,7 +32,7 @@ const App = (): JSX.Element => {
   }, []);
 
   return (
-    <UserContext.Provider value={userState}>
+    <UserContext.Provider value={{ user: userState, setUser: setUserState }}>
       <UserContext.Consumer>
         {({ user }: UserContextInterface): JSX.Element => {
           return (

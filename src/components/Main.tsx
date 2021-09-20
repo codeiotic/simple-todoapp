@@ -1,4 +1,4 @@
-import { ChangeEvent, MouseEvent, useContext, useState } from "react";
+import { ChangeEvent, MouseEvent, useEffect, useState } from "react";
 import {
   Backdrop,
   Button,
@@ -24,8 +24,8 @@ import maxIndexValue from "../utils/lastIndexValue";
 import validateTodo from "../utils/validate";
 import MainStyles from "../styles/Main";
 import "../styles.css";
-import UserContext from "../hooks/userContext";
 import { useHistory } from "react-router";
+import { supabase } from "../db/supabaseClient";
 
 export default function Main(): JSX.Element {
   const className = MainStyles();
@@ -39,7 +39,7 @@ export default function Main(): JSX.Element {
     time: "",
   });
   const location = useHistory();
-  const { user } = useContext(UserContext);
+  const supabaseUser = supabase.auth.user();
 
   const { todosArray, clearTodos, addTodo, deleteTodo, updateTodo } =
     useLocalStorage();
@@ -109,9 +109,11 @@ export default function Main(): JSX.Element {
     deleteTodo(index);
   };
 
-  if (!(user && user !== {})) {
-    location.goBack();
-  }
+  useEffect((): void => {
+    if (!supabaseUser?.email) {
+      location.push("/login");
+    }
+  }, [supabaseUser, location]);
 
   return (
     <>

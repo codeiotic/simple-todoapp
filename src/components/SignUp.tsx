@@ -1,6 +1,6 @@
 import { Button, Divider, Switch, TextField } from "@material-ui/core";
 import { useSnackbar } from "notistack";
-import { ChangeEvent, MouseEvent, useState } from "react";
+import { ChangeEvent, MouseEvent, useEffect, useState } from "react";
 import Loader from "react-loader-spinner";
 import { Link, useHistory } from "react-router-dom";
 import { supabase } from "../db/supabaseClient";
@@ -14,6 +14,7 @@ const SignUp = (): JSX.Element => {
   const [checked, setChecked] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const location = useHistory();
+  const supabaseUser = supabase.auth.user();
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -37,6 +38,12 @@ const SignUp = (): JSX.Element => {
     }
   };
 
+  useEffect((): void => {
+    if (supabaseUser?.email) {
+      location.push("/home");
+    }
+  }, [supabaseUser, location]);
+
   const clear = (): void => {
     setEmail("");
     setPassword("");
@@ -46,9 +53,6 @@ const SignUp = (): JSX.Element => {
   return (
     <UserContext.Consumer>
       {({ user }: UserContextInterface): JSX.Element => {
-        if (user && user !== {}) {
-          location.goBack();
-        }
         return (
           <div className={classNames.parent}>
             <h1 className={classNames.heading}>Sign Up</h1>
