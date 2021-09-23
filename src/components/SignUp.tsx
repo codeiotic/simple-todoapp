@@ -89,7 +89,7 @@ const SignUp = (): JSX.Element => {
                   className={classNames.emailInput}
                   type="email"
                   variant="filled"
-                  size="small"
+                  size="medium"
                   label="Email"
                   fullWidth
                   required
@@ -102,7 +102,7 @@ const SignUp = (): JSX.Element => {
                   className={classNames.passwordInput}
                   type={checked ? "text" : "password"}
                   variant="filled"
-                  size="small"
+                  size="medium"
                   label="Password"
                   required
                   fullWidth
@@ -121,12 +121,13 @@ const SignUp = (): JSX.Element => {
                     checked: boolean
                   ): void => setChecked(checked)}
                 />
-                <Divider className={classNames.divider} />
+                <Divider className={classNames.buttonDivider} />
                 <div className={classNames.buttons}>
                   <Button
                     variant="contained"
                     type="submit"
                     variantType="primary"
+                    size="large"
                   >
                     {loading ? (
                       <Loader
@@ -144,6 +145,7 @@ const SignUp = (): JSX.Element => {
                     type="button"
                     variant="outlined"
                     onClick={clear}
+                    size="large"
                   >
                     Cancel
                   </Button>

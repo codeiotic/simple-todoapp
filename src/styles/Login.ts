@@ -37,11 +37,17 @@ const LogInStyles = makeStyles((theme: Theme) =>
       width: "80%",
       maxWidth: "500px",
       marginBottom: "20px",
-      fontSize: "1.6rem",
+      fontSize: "1.8rem",
     },
     divider: {
       backgroundColor: "gray",
       width: "80%",
+      maxWidth: "500px",
+      marginBottom: "30px",
+    },
+    buttonDivider: {
+      backgroundColor: "gray",
+      width: "100%",
       maxWidth: "500px",
       marginBottom: "30px",
     },
@@ -53,7 +59,7 @@ const LogInStyles = makeStyles((theme: Theme) =>
     },
     signUpLink: {
       fontSize: "0.8rem",
-      marginTop: "20px",
+      marginTop: "30px",
       width: "80%",
       maxWidth: "500px",
     },

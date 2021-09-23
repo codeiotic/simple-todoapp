@@ -1,7 +1,7 @@
 import { useSnackbar } from "notistack";
 import { useState } from "react";
 import Loader from "react-loader-spinner";
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { supabase } from "../db/supabaseClient";
 import UserContext from "../hooks/userContext";
 import HeaderStyles from "../styles/Header";
@@ -11,7 +11,6 @@ const Header = (): JSX.Element => {
   const [loading, setLoading] = useState<boolean>(false);
   const classNames = HeaderStyles();
   const { enqueueSnackbar } = useSnackbar();
-  const location = useHistory();
   const supabaseUser = supabase.auth.user();
 
   const signOutUser = async (): Promise<void> => {
@@ -23,7 +22,6 @@ const Header = (): JSX.Element => {
       enqueueSnackbar("Successfully logged out", { variant: "success" });
     }
     setLoading(false);
-    location.push("/");
   };
 
   return (

@@ -5,8 +5,19 @@ import ButtonStyles from "../styles/Button";
 
 interface ButtonProps
   extends PropsWithChildren<ButtonHTMLAttributes<HTMLButtonElement>> {
+  /**
+   * The variant of the button.
+   */
   variantType: "primary" | "secondary";
+  /**
+   * The variant used by Material UI
+   */
   variant: "text" | "outlined" | "contained";
+  /**
+   * The size of the button.
+   * @default 'medium'
+   */
+  size?: "small" | "medium" | "large";
 }
 
 export const Button = ({
@@ -15,8 +26,8 @@ export const Button = ({
   type,
   variant,
   style,
+  size,
   onClick,
-  ...props
 }: ButtonProps): JSX.Element => {
   const styles = ButtonStyles();
 
@@ -26,7 +37,7 @@ export const Button = ({
         y: -2,
       }}
       whileTap={{
-        y: 2,
+        y: 1,
       }}
     >
       <InternalButton
@@ -39,6 +50,7 @@ export const Button = ({
         }
         style={style}
         onClick={onClick}
+        size={size}
       >
         {children}
       </InternalButton>
