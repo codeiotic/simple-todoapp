@@ -26,6 +26,7 @@ import MainStyles from "../styles/Main";
 import "../styles.css";
 import { useHistory } from "react-router";
 import { supabase } from "../db/supabaseClient";
+import { motion } from "framer-motion";
 
 export default function Main(): JSX.Element {
   const className = MainStyles();
@@ -40,6 +41,7 @@ export default function Main(): JSX.Element {
   });
   const location = useHistory();
   const supabaseUser = supabase.auth.user();
+  const transition = { duration: 0.4, ease: "easeInOut" };
 
   const { todosArray, clearTodos, addTodo, deleteTodo, updateTodo } =
     useLocalStorage();
@@ -110,13 +112,24 @@ export default function Main(): JSX.Element {
   };
 
   useEffect((): void => {
-    if (!supabaseUser?.email) {
+    if (!supabaseUser) {
       location.push("/login");
     }
   }, [supabaseUser, location]);
 
   return (
-    <>
+    <motion.div
+      exit={{
+        opacity: 0,
+      }}
+      initial={{
+        opacity: 0.9,
+      }}
+      animate={{
+        opacity: 1,
+      }}
+      transition={transition}
+    >
       <div className={className.parent}>
         <div className={className.main}>
           <form action="" className={className.form}>
@@ -223,6 +236,6 @@ export default function Main(): JSX.Element {
         alt="Waves ~~"
         className={className.waves}
       />
-    </>
+    </motion.div>
   );
 }

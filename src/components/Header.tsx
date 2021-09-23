@@ -1,4 +1,3 @@
-import { Button } from "@material-ui/core";
 import { useSnackbar } from "notistack";
 import { useState } from "react";
 import Loader from "react-loader-spinner";
@@ -6,6 +5,7 @@ import { Link, useHistory } from "react-router-dom";
 import { supabase } from "../db/supabaseClient";
 import UserContext from "../hooks/userContext";
 import HeaderStyles from "../styles/Header";
+import { Button } from "../components/Button";
 
 const Header = (): JSX.Element => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -18,7 +18,9 @@ const Header = (): JSX.Element => {
     setLoading(true);
     let { error } = await supabase.auth.signOut();
     if (error) {
-      enqueueSnackbar(error.message);
+      enqueueSnackbar(error.message, { variant: "error" });
+    } else {
+      enqueueSnackbar("Successfully logged out", { variant: "success" });
     }
     setLoading(false);
     location.push("/");
@@ -39,15 +41,12 @@ const Header = (): JSX.Element => {
           </div>
           <nav>
             <div className={classNames.linkParent}>
-              {supabaseUser?.email ? (
+              {supabaseUser ? (
                 <>
                   <Button
                     variant="contained"
-                    className={classNames.primaryBtn}
-                    style={{
-                      backgroundColor: "#2acafe",
-                      height: "2.1rem",
-                    }}
+                    type="submit"
+                    variantType="primary"
                     onClick={signOutUser}
                   >
                     {loading ? (
@@ -65,25 +64,12 @@ const Header = (): JSX.Element => {
               ) : (
                 <>
                   <Link to="/sign-up" className={classNames.links}>
-                    <Button
-                      variant="contained"
-                      style={{
-                        backgroundColor: "#2acafe",
-                        height: "2.1rem",
-                      }}
-                      className={classNames.primaryBtn}
-                    >
+                    <Button variantType="primary" variant="contained">
                       Sign Up
                     </Button>
                   </Link>
                   <Link to="/login" className={classNames.links}>
-                    <Button
-                      variant="outlined"
-                      style={{
-                        border: "1px solid white",
-                        height: "2.1rem",
-                      }}
-                    >
+                    <Button variantType="secondary" variant="outlined">
                       LogIn
                     </Button>
                   </Link>
