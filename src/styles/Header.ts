@@ -14,7 +14,6 @@ const HeaderStyles = makeStyles((theme: Theme) =>
       justifyContent: "space-between",
       backgroundColor: "#002233",
       zIndex: 100,
-      // boxShadow: "-1px 24px 31px -15px rgba(0,0,0,0.75)",
       boxShadow: theme.shadows[10],
     },
     imgParent: {
@@ -41,11 +40,6 @@ const HeaderStyles = makeStyles((theme: Theme) =>
       textDecoration: "none",
       fontSize: "1rem",
       fontWeight: "lighter",
-    },
-    primaryBtn: {
-      "& .MuiButton-label": {
-        color: "black",
-      },
     },
   })
 );

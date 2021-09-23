@@ -32,18 +32,6 @@ const SignUpStyles = makeStyles((theme: Theme) =>
       width: "100%",
       gap: "20px",
     },
-    primaryButton: {
-      "& .MuiButton-label": {
-        color: "black",
-      },
-      backgroundColor: "#2acafe",
-      "&:hover": {
-        backgroundColor: "#5ed8ff",
-      },
-    },
-    secondaryButton: {
-      border: "1px solid white",
-    },
     heading: {
       marginTop: "100px",
       width: "80%",
