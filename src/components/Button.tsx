@@ -1,16 +1,7 @@
-import {
-  Button as InternalButton,
-  ButtonTypeMap,
-  ExtendButtonBase,
-  Theme,
-} from "@material-ui/core";
+import { Button as InternalButton } from "@material-ui/core";
 import { motion } from "framer-motion";
 import { ButtonHTMLAttributes, PropsWithChildren } from "react";
 import ButtonStyles from "../styles/Button";
-
-// interface ButtonProps extends ExtendButtonBase<ButtonTypeMap<{}, "button">> {
-//   variantType: "primary" | "secondary";
-// }
 
 interface ButtonProps
   extends PropsWithChildren<ButtonHTMLAttributes<HTMLButtonElement>> {

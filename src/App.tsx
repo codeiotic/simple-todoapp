@@ -1,10 +1,4 @@
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  useLocation,
-  useRouteMatch,
-} from "react-router-dom";
+import { Switch, Route, useLocation } from "react-router-dom";
 import Main from "./components/Main";
 import LogIn from "./components/Login";
 import SignUp from "./components/SignUp";

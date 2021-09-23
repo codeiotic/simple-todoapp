@@ -150,6 +150,7 @@ const LogIn = (): JSX.Element => {
                     variantType="secondary"
                     type="button"
                     variant="outlined"
+                    onClick={clear}
                   >
                     Cancel
                   </Button>

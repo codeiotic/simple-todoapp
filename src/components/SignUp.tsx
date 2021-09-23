@@ -143,6 +143,7 @@ const SignUp = (): JSX.Element => {
                     variantType="secondary"
                     type="button"
                     variant="outlined"
+                    onClick={clear}
                   >
                     Cancel
                   </Button>

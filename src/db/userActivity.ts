@@ -63,7 +63,7 @@ const userActivity = async ({
         finalCallback();
       }
 
-    case "login":
+    case "update":
       try {
         let { user, error } = await supabase.auth.update({ email, password });
         return { user, error };
