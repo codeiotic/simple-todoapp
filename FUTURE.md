@@ -6,7 +6,9 @@
 
 - [x] Create the user in Supabase, and add various login provider (Google, Github & more).
 
-- [ ] Mark Todos as completed
+- [ ] Use `react-form` on the settings page.
+
+- [ ] Mark Todos as completed.
 
 - [ ] Add an description field to the Todos.
 
