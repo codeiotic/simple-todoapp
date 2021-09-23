@@ -1,4 +1,10 @@
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  useLocation,
+  useRouteMatch,
+} from "react-router-dom";
 import Main from "./components/Main";
 import LogIn from "./components/Login";
 import SignUp from "./components/SignUp";
@@ -7,11 +13,13 @@ import Header from "./components/Header";
 import { useEffect, useState } from "react";
 import { supabase } from "./db/supabaseClient";
 import { AuthChangeEvent, Session } from "@supabase/gotrue-js";
-import UserContext, { UserContextInterface } from "./hooks/userContext";
+import UserContext from "./hooks/userContext";
 import Settings from "./components/Settings";
+import { AnimatePresence } from "framer-motion";
 
 const App = (): JSX.Element => {
   const [userState, setUserState] = useState({});
+  let location = useLocation();
 
   useEffect((): (() => void) => {
     setUserState({
@@ -34,28 +42,20 @@ const App = (): JSX.Element => {
   return (
     <UserContext.Provider value={{ user: userState, setUser: setUserState }}>
       <UserContext.Consumer>
-        {({ user }: UserContextInterface): JSX.Element => {
+        {(): JSX.Element => {
           return (
-            <Router>
+            <>
               <Header />
-              <Switch>
-                <Route path="/" exact>
-                  <Home />
-                </Route>
-                <Route path="/settings" exact>
-                  <Settings />
-                </Route>
-                <Route path="/home" exact>
-                  <Main />
-                </Route>
-                <Route path="/sign-up" exact>
-                  <SignUp />
-                </Route>
-                <Route path="/login" exact>
-                  <LogIn />
-                </Route>
-              </Switch>
-            </Router>
+              <AnimatePresence exitBeforeEnter>
+                <Switch location={location} key={location.pathname}>
+                  <Route path="/" exact component={Home} />
+                  <Route path="/settings" exact component={Settings} />
+                  <Route path="/home" exact component={Main} />
+                  <Route path="/sign-up" exact component={SignUp} />
+                  <Route path="/login" exact component={LogIn} />
+                </Switch>
+              </AnimatePresence>
+            </>
           );
         }}
       </UserContext.Consumer>
