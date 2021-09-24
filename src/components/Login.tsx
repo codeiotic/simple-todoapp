@@ -12,7 +12,7 @@ import {
   UserActivityReturnInterface,
   UserActivityInputInterface,
 } from "../db/userActivity";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { motion } from "framer-motion";
 import { Button } from "../components/Button";
 
@@ -23,7 +23,7 @@ const LogIn = (): JSX.Element => {
   let location = useHistory();
   const { enqueueSnackbar } = useSnackbar();
   const supabaseUser = supabase.auth.user();
-  const { register, handleSubmit, setValue } =
+  const { reset, handleSubmit, control } =
     useForm<UserActivityInputInterface>();
 
   const transition = { duration: 0.4, ease: "easeInOut" };
@@ -47,18 +47,6 @@ const LogIn = (): JSX.Element => {
       } else {
         enqueueSnackbar("Logged in as " + user.email, { variant: "success" });
       }
-    });
-  };
-
-  const clear = (): void => {
-    setChecked(false);
-    setValue("email", "", {
-      shouldTouch: true,
-      shouldDirty: true,
-    });
-    setValue("password", "", {
-      shouldTouch: true,
-      shouldDirty: true,
     });
   };
 
@@ -92,31 +80,46 @@ const LogIn = (): JSX.Element => {
                 className={classNames.form}
                 onSubmit={handleSubmit(onFormSubmit)}
               >
-                <TextField
-                  className={classNames.emailInput}
-                  type="email"
-                  variant="filled"
-                  size="medium"
-                  label="Email"
-                  autoComplete="off"
-                  fullWidth
-                  required
-                  {...register("email", {
-                    required: true,
-                  })}
+                <Controller
+                  control={control}
+                  name="email"
+                  defaultValue=""
+                  render={({ field: { onChange, value } }): JSX.Element => (
+                    <TextField
+                      className={classNames.emailInput}
+                      type="email"
+                      variant="filled"
+                      size="medium"
+                      label="Email"
+                      autoComplete="off"
+                      onChange={onChange}
+                      value={value}
+                      fullWidth
+                      required
+                    />
+                  )}
                 />
-                <TextField
-                  className={classNames.passwordInput}
-                  type={checked ? "text" : "password"}
-                  variant="filled"
-                  size="medium"
-                  label="Password"
-                  autoComplete="off"
-                  required
-                  fullWidth
-                  {...register("password", {
+                <Controller
+                  control={control}
+                  name="password"
+                  defaultValue=""
+                  rules={{
                     required: true,
-                  })}
+                  }}
+                  render={({ field: { value, onChange } }): JSX.Element => (
+                    <TextField
+                      className={classNames.passwordInput}
+                      type={checked ? "text" : "password"}
+                      variant="filled"
+                      size="medium"
+                      label="Password"
+                      autoComplete="off"
+                      onChange={onChange}
+                      value={value}
+                      required
+                      fullWidth
+                    />
+                  )}
                 />
                 <p className={classNames.showPwd}>Show password</p>
                 <Switch
@@ -151,7 +154,12 @@ const LogIn = (): JSX.Element => {
                     variantType="secondary"
                     type="button"
                     variant="outlined"
-                    onClick={clear}
+                    onClick={(): void =>
+                      reset({
+                        email: "",
+                        password: "",
+                      })
+                    }
                     size="large"
                   >
                     Cancel

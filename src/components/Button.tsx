@@ -20,6 +20,14 @@ interface ButtonProps
   size?: "small" | "medium" | "large";
 }
 
+/**
+ * Creates a nice animated button!
+ * @param {ButtonProps} ButtonProps
+ * @default <Button variantType="primary" variant="contained" size="medium">
+ * {children}
+ * </Button>
+ * @see /components/Button.tsx
+ */
 export const Button = ({
   children,
   variantType,

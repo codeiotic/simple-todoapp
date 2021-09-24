@@ -53,7 +53,7 @@ const modalBody = ({
     let { errors, valid } = validateTodo(value, localTodosArray);
 
     if (valid) {
-      localTodosArray.map(({ index, completed, time }: TodosSchema): void => {
+      localTodosArray.map(({ index, completed }: TodosSchema): void => {
         if (index === todoState.index) {
           updateTodo({
             content: {
