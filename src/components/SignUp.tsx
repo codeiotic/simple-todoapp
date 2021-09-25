@@ -6,10 +6,7 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import Loader from "react-loader-spinner";
 import { Link, useHistory } from "react-router-dom";
 import { supabase } from "../db/supabaseClient";
-import userActivity, {
-  UserActivityInputInterface,
-  UserActivityReturnInterface,
-} from "../db/userActivity";
+import { UserActivityInputInterface } from "../db/userActivity";
 import UserContext from "../hooks/userContext";
 import SignUpStyles from "../styles/SignUp";
 import { Button } from "../components/Button";
@@ -30,26 +27,32 @@ const SignUp = (): JSX.Element => {
   const { handleSubmit, reset, control } =
     useForm<UserActivityInputInterface>();
 
-  const onFormSubmit: SubmitHandler<UserActivityInputInterface> = ({
-    email,
-    password,
-  }: UserActivityInputInterface): void => {
+  const onFormSubmit: SubmitHandler<UserActivityInputInterface> = (): void => {
+    // setLoading(true);
+    // userActivity({
+    //   email: email,
+    //   password: password,
+    //   type: "signUp",
+    //   finalCallback: (): void => {
+    //     setLoading(false);
+    //     location.push("/home");
+    //   },
+    // }).then(({ error, user }: UserActivityReturnInterface): void => {
+    //   if (error) {
+    //     enqueueSnackbar(error.message, { variant: "error" });
+    //   } else {
+    //     enqueueSnackbar("Signed up as " + user?.email, { variant: "success" });
+    //   }
+    // });
     setLoading(true);
-    userActivity({
-      email: email,
-      password: password,
-      type: "signUp",
-      finalCallback: (): void => {
-        setLoading(false);
-        location.push("/home");
-      },
-    }).then(({ error, user }: UserActivityReturnInterface): void => {
-      if (error) {
-        enqueueSnackbar(error.message, { variant: "error" });
-      } else {
-        enqueueSnackbar("Signed up as " + user?.email, { variant: "success" });
-      }
+    reset({
+      email: "",
+      password: "",
     });
+    enqueueSnackbar("Sorry, currently we are not accepting any sign ups", {
+      variant: "info",
+    });
+    setLoading(false);
   };
 
   useEffect((): void => {
@@ -161,8 +164,11 @@ const SignUp = (): JSX.Element => {
                   </Button>
                 </div>
               </form>
-              <p className={classNames.signUpLink}>
-                Already have an account? <Link to="/login">Log In</Link>
+              <p className={classNames.signUp}>
+                Already have an account?{" "}
+                <Link to="/login" className={classNames.signUpLink}>
+                  Log In
+                </Link>
               </p>
             </div>
           );
