@@ -13,6 +13,12 @@ import userActivity, {
 import UserContext from "../hooks/userContext";
 import SignUpStyles from "../styles/SignUp";
 import { Button } from "../components/Button";
+import {
+  exitAnimations,
+  initialAnimations,
+  pageLoadAnimations,
+  pageToPageTransition,
+} from "../utils/animations";
 
 const SignUp = (): JSX.Element => {
   const classNames = SignUpStyles();
@@ -24,14 +30,11 @@ const SignUp = (): JSX.Element => {
   const { handleSubmit, reset, control } =
     useForm<UserActivityInputInterface>();
 
-  const transition = { duration: 0.4, ease: "easeInOut" };
-
   const onFormSubmit: SubmitHandler<UserActivityInputInterface> = ({
     email,
     password,
   }: UserActivityInputInterface): void => {
     setLoading(true);
-    console.log(email, password);
     userActivity({
       email: email,
       password: password,
@@ -44,7 +47,7 @@ const SignUp = (): JSX.Element => {
       if (error) {
         enqueueSnackbar(error.message, { variant: "error" });
       } else {
-        enqueueSnackbar("Signed up as " + user.email, { variant: "success" });
+        enqueueSnackbar("Signed up as " + user?.email, { variant: "success" });
       }
     });
   };
@@ -57,17 +60,10 @@ const SignUp = (): JSX.Element => {
 
   return (
     <motion.div
-      exit={{
-        opacity: 0.9,
-        backgroundColor: "#002233",
-      }}
-      initial={{
-        opacity: 0.9,
-      }}
-      animate={{
-        opacity: 1,
-      }}
-      transition={transition}
+      exit={exitAnimations}
+      initial={initialAnimations}
+      animate={pageLoadAnimations}
+      transition={pageToPageTransition}
     >
       <UserContext.Consumer>
         {(): JSX.Element => {

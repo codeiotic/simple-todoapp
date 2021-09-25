@@ -9,6 +9,13 @@ import { UserActivityInputInterface } from "../db/userActivity";
 import UserContext from "../hooks/userContext";
 import SettingsStyles from "../styles/Settings";
 import { Button } from "./Button";
+import { motion } from "framer-motion";
+import {
+  exitAnimations,
+  initialAnimations,
+  pageLoadAnimations,
+  pageToPageTransition,
+} from "../utils/animations";
 
 const Settings = (): JSX.Element => {
   const supabaseUser = supabase.auth.user();
@@ -52,96 +59,103 @@ const Settings = (): JSX.Element => {
     useForm<UserActivityInputInterface>();
 
   return (
-    <UserContext.Consumer>
-      {(): JSX.Element => {
-        return (
-          <div className={classNames.parent}>
-            <h1 className={classNames.heading}>Settings</h1>
-            <Divider className={classNames.divider} />
-            <form
-              className={classNames.form}
-              onSubmit={handleSubmit(changeSettings)}
-            >
-              <Controller
-                control={control}
-                name="email"
-                defaultValue={supabaseUser?.email || ""}
-                render={({ field: { onChange, value } }): JSX.Element => (
-                  <TextField
-                    className={classNames.emailInput}
-                    type="email"
-                    variant="filled"
-                    size="medium"
-                    label="Update Email"
-                    autoComplete="off"
-                    onChange={onChange}
-                    value={value}
-                    fullWidth
-                    required
-                  />
-                )}
-              />
-              <Controller
-                control={control}
-                name="password"
-                defaultValue=""
-                rules={{
-                  required: true,
-                }}
-                render={({ field: { value, onChange } }): JSX.Element => (
-                  <TextField
-                    className={classNames.passwordInput}
-                    type="password"
-                    variant="filled"
-                    size="medium"
-                    label="Update Password"
-                    autoComplete="off"
-                    onChange={onChange}
-                    value={value}
-                    required
-                    fullWidth
-                  />
-                )}
-              />
-              <Divider className={classNames.buttonDivider} />
-              <div className={classNames.buttons}>
-                <Button
-                  variant="contained"
-                  type="submit"
-                  variantType="primary"
-                  size="large"
-                >
-                  {loading ? (
-                    <Loader
-                      type="Oval"
-                      color="#002233"
-                      height="24"
-                      width="42"
+    <motion.div
+      exit={exitAnimations}
+      initial={initialAnimations}
+      animate={pageLoadAnimations}
+      transition={pageToPageTransition}
+    >
+      <UserContext.Consumer>
+        {(): JSX.Element => {
+          return (
+            <div className={classNames.parent}>
+              <h1 className={classNames.heading}>Settings</h1>
+              <Divider className={classNames.divider} />
+              <form
+                className={classNames.form}
+                onSubmit={handleSubmit(changeSettings)}
+              >
+                <Controller
+                  control={control}
+                  name="email"
+                  defaultValue={supabaseUser?.email || ""}
+                  render={({ field: { onChange, value } }): JSX.Element => (
+                    <TextField
+                      className={classNames.emailInput}
+                      type="email"
+                      variant="filled"
+                      size="medium"
+                      label="Update Email"
+                      autoComplete="off"
+                      onChange={onChange}
+                      value={value}
+                      fullWidth
+                      required
                     />
-                  ) : (
-                    "Update"
                   )}
-                </Button>
-                <Button
-                  variantType="secondary"
-                  type="button"
-                  variant="outlined"
-                  onClick={(): void =>
-                    reset({
-                      email: "",
-                      password: "",
-                    })
-                  }
-                  size="large"
-                >
-                  Cancel
-                </Button>
-              </div>
-            </form>
-          </div>
-        );
-      }}
-    </UserContext.Consumer>
+                />
+                <Controller
+                  control={control}
+                  name="password"
+                  defaultValue=""
+                  rules={{
+                    required: true,
+                  }}
+                  render={({ field: { value, onChange } }): JSX.Element => (
+                    <TextField
+                      className={classNames.passwordInput}
+                      type="password"
+                      variant="filled"
+                      size="medium"
+                      label="Update Password"
+                      autoComplete="off"
+                      onChange={onChange}
+                      value={value}
+                      required
+                      fullWidth
+                    />
+                  )}
+                />
+                <Divider className={classNames.buttonDivider} />
+                <div className={classNames.buttons}>
+                  <Button
+                    variant="contained"
+                    type="submit"
+                    variantType="primary"
+                    size="large"
+                  >
+                    {loading ? (
+                      <Loader
+                        type="Oval"
+                        color="#002233"
+                        height="24"
+                        width="42"
+                      />
+                    ) : (
+                      "Update"
+                    )}
+                  </Button>
+                  <Button
+                    variantType="secondary"
+                    type="button"
+                    variant="outlined"
+                    onClick={(): void =>
+                      reset({
+                        email: "",
+                        password: "",
+                      })
+                    }
+                    size="large"
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </form>
+            </div>
+          );
+        }}
+      </UserContext.Consumer>
+    </motion.div>
   );
 };
 

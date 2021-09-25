@@ -15,6 +15,12 @@ import {
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { motion } from "framer-motion";
 import { Button } from "../components/Button";
+import {
+  exitAnimations,
+  initialAnimations,
+  pageLoadAnimations,
+  pageToPageTransition,
+} from "../utils/animations";
 
 const LogIn = (): JSX.Element => {
   const classNames = LogInStyles();
@@ -25,8 +31,6 @@ const LogIn = (): JSX.Element => {
   const supabaseUser = supabase.auth.user();
   const { reset, handleSubmit, control } =
     useForm<UserActivityInputInterface>();
-
-  const transition = { duration: 0.4, ease: "easeInOut" };
 
   const onFormSubmit: SubmitHandler<UserActivityInputInterface> = ({
     email,
@@ -58,17 +62,10 @@ const LogIn = (): JSX.Element => {
 
   return (
     <motion.div
-      exit={{
-        opacity: 0.9,
-        backgroundColor: "#002233",
-      }}
-      initial={{
-        opacity: 0.9,
-      }}
-      animate={{
-        opacity: 1,
-      }}
-      transition={transition}
+      exit={exitAnimations}
+      initial={initialAnimations}
+      animate={pageLoadAnimations}
+      transition={pageToPageTransition}
     >
       <UserContext.Consumer>
         {(): JSX.Element => {
