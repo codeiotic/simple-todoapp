@@ -141,8 +141,6 @@ function useLocalStorage(): ReturnInterface {
     index,
   }: UpdateTodoProps): void => {
     if (content) {
-      console.log(newTodosArr, content, index);
-      console.log(todos);
       todos.map((todo: TodosSchema): void => {
         if (todo.index === index) {
           todo.todos = content.todos;
