@@ -1,10 +1,9 @@
 import { Divider, TextField } from "@material-ui/core";
 import { useSnackbar } from "notistack";
-import { ChangeEvent, useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import Loader from "react-loader-spinner";
 import { useHistory } from "react-router";
-import { Link } from "react-router-dom";
 import { supabase } from "../db/supabaseClient";
 import { UserActivityInputInterface } from "../db/userActivity";
 import UserContext from "../hooks/userContext";
@@ -13,8 +12,6 @@ import { Button } from "./Button";
 
 const Settings = (): JSX.Element => {
   const supabaseUser = supabase.auth.user();
-  const [email, setEmail] = useState<string>(supabaseUser?.email);
-  const [password, setPassword] = useState<string>("");
   const classNames = SettingsStyles();
   const location = useHistory();
   const [loading, setLoading] = useState<boolean>(false);
@@ -26,7 +23,13 @@ const Settings = (): JSX.Element => {
     }
   }, [supabaseUser, location]);
 
-  const changeSettings = async (): Promise<void> => {
+  const changeSettings: SubmitHandler<UserActivityInputInterface> = async ({
+    email,
+    password,
+  }: UserActivityInputInterface): Promise<void> => {
+    /**
+     *  ! This not properly done
+     */
     try {
       setLoading(true);
       let { error } = await supabase.auth.update({
@@ -62,7 +65,7 @@ const Settings = (): JSX.Element => {
               <Controller
                 control={control}
                 name="email"
-                defaultValue={email}
+                defaultValue={supabaseUser?.email || ""}
                 render={({ field: { onChange, value } }): JSX.Element => (
                   <TextField
                     className={classNames.emailInput}
