@@ -50,6 +50,7 @@ const SettingsStyles = makeStyles((theme: Theme) =>
       width: "100%",
       maxWidth: "500px",
       marginBottom: "30px",
+      marginTop: "20px",
     },
     showPwd: {
       fontSize: "0.8rem",
