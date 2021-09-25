@@ -163,8 +163,11 @@ const LogIn = (): JSX.Element => {
                   </Button>
                 </div>
               </form>
-              <p className={classNames.signUpLink}>
-                Don't have an account? <Link to="/sign-up">Sign Up</Link>
+              <p className={classNames.signUp}>
+                Don't have an account?{" "}
+                <Link to="/sign-up" className={classNames.signUpLink}>
+                  Sign Up
+                </Link>
               </p>
             </div>
           );

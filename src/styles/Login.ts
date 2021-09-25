@@ -8,7 +8,7 @@ const LogInStyles = makeStyles((theme: Theme) =>
       alignItems: "center",
       justifyContent: "flex-start",
       height: "100vh",
-      backgroundColor: "#002233",
+      backgroundColor: "#022e44",
       flexDirection: "column",
     },
     form: {
@@ -57,11 +57,15 @@ const LogInStyles = makeStyles((theme: Theme) =>
     switch: {
       marginBottom: "20px",
     },
-    signUpLink: {
-      fontSize: "0.8rem",
+    signUp: {
+      fontSize: "0.83rem",
       marginTop: "30px",
       width: "80%",
       maxWidth: "500px",
+      userSelect: "none",
+    },
+    signUpLink: {
+      fontWeight: "bold",
     },
   })
 );

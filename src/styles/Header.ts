@@ -14,13 +14,13 @@ const HeaderStyles = makeStyles((theme: Theme) =>
       justifyContent: "space-between",
       backgroundColor: "#002233",
       zIndex: 100,
-      boxShadow: theme.shadows[10],
+      boxShadow: theme.shadows[14],
     },
     imgParent: {
       width: "15%",
       maxWidth: "80px",
       minWidth: "70px",
-      marginLeft: "40px",
+      marginLeft: "5%", // originally 40px
     },
     img: {
       display: "flex",
@@ -29,7 +29,7 @@ const HeaderStyles = makeStyles((theme: Theme) =>
     },
     linkParent: {
       "&:last-child": {
-        marginRight: "40px",
+        marginRight: "20px", // originally 40px
       },
       display: "flex",
       alignItems: "center",
