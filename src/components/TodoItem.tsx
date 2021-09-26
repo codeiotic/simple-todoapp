@@ -67,7 +67,7 @@ const TodoItem = ({
     return (): void => {
       clearInterval(handle);
     };
-  }, []);
+  }, [time]);
 
   return (
     <ListItem

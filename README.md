@@ -1,5 +1,7 @@
 # Simple Todo App
 
+## This project is on hold. No pull requests and issues will be accepted for now.
+
 > Note: This is still work-in-progress
 > If you want to contribute, create a pull-request.
 > You can report issues by creating a new issue.

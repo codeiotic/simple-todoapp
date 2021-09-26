@@ -39,16 +39,14 @@ function useLocalStorage(): ReturnInterface {
   let todos: TodosSchema[] = todosArray;
   let localStorageTodos = localStorage.getItem("todos");
 
+  /**
+   * Get's the todos from localStorage, if present.
+   */
   useEffect((): void => {
     if (localStorageTodos) {
       setTodos(JSON.parse(localStorageTodos));
-      todos = JSON.parse(localStorageTodos);
     }
   }, [localStorageTodos]);
-
-  useEffect((): void => {
-    todos = todosArray;
-  }, [todosArray]);
 
   /**
    * @function
@@ -149,6 +147,7 @@ function useLocalStorage(): ReturnInterface {
           todo.time = content.time;
           todo.completed = content.completed;
         }
+        return null;
       });
       enqueueSnackbar("Todo Updated!", {
         variant: "success",

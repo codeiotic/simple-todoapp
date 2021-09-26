@@ -26,6 +26,7 @@ const modalBody = ({
   modalOpenBoolean,
   modalOpenBooleanValue,
 }: ModalComponentProps): JSX.Element => {
+  /* eslint-disable */
   const className = modalStyles();
   const [value, setValue] = useState<string>(todoState.todos);
   const [disabled, setDisabled] = useState<boolean>(true);
@@ -52,7 +53,7 @@ const modalBody = ({
     let { errors, valid } = validateTodo(value, localTodosArray);
 
     if (valid) {
-      localTodosArray.map(({ index, completed, time }: TodosSchema): void => {
+      localTodosArray.map(({ index, completed }: TodosSchema): void => {
         if (index === todoState.index) {
           updateTodo({
             content: {
