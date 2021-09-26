@@ -30,30 +30,17 @@ const Settings = (): JSX.Element => {
     }
   }, [supabaseUser, location]);
 
-  const changeSettings: SubmitHandler<UserActivityInputInterface> = async ({
-    email,
-    password,
-  }: UserActivityInputInterface): Promise<void> => {
-    /**
-     *  ! This not properly done
-     */
-    try {
+  const changeSettings: SubmitHandler<UserActivityInputInterface> =
+    (): void => {
+      /**
+       *  ! This not properly done
+       */
       setLoading(true);
-      let { error } = await supabase.auth.update({
-        email,
-        password,
+      enqueueSnackbar("Sorry, this activity is prohibited", {
+        variant: "info",
       });
-      if (error) {
-        enqueueSnackbar(error.message, { variant: "error" });
-      } else {
-        enqueueSnackbar("Settings updated", { variant: "success" });
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
       setLoading(false);
-    }
-  };
+    };
 
   const { reset, handleSubmit, control } =
     useForm<UserActivityInputInterface>();
@@ -71,6 +58,11 @@ const Settings = (): JSX.Element => {
             <div className={classNames.parent}>
               <h1 className={classNames.heading}>Settings</h1>
               <Divider className={classNames.divider} />
+              {supabaseUser?.aud === "authenticated" ? (
+                <></>
+              ) : (
+                <>Note: You are not authenticated</>
+              )}
               <form
                 className={classNames.form}
                 onSubmit={handleSubmit(changeSettings)}

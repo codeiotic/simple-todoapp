@@ -7,11 +7,7 @@ import LogInStyles from "../styles/Login";
 import { useHistory } from "react-router-dom";
 import Loader from "react-loader-spinner";
 import UserContext from "../hooks/userContext";
-import userActivity from "../db/userActivity";
-import {
-  UserActivityReturnInterface,
-  UserActivityInputInterface,
-} from "../db/userActivity";
+import { UserActivityInputInterface } from "../db/userActivity";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { motion } from "framer-motion";
 import { Button } from "../components/Button";
@@ -32,26 +28,16 @@ const LogIn = (): JSX.Element => {
   const { reset, handleSubmit, control } =
     useForm<UserActivityInputInterface>();
 
-  const onFormSubmit: SubmitHandler<UserActivityInputInterface> = ({
-    email,
-    password,
-  }: UserActivityInputInterface): void => {
+  const onFormSubmit: SubmitHandler<UserActivityInputInterface> = (): void => {
     setLoading(true);
-    userActivity({
-      email: email,
-      password: password,
-      type: "login",
-      finalCallback: (): void => {
-        setLoading(false);
-        location.push("/home");
-      },
-    }).then(({ error, user }: UserActivityReturnInterface): void => {
-      if (error) {
-        enqueueSnackbar(error.message, { variant: "error" });
-      } else {
-        enqueueSnackbar("Logged in as " + user.email, { variant: "success" });
-      }
+    enqueueSnackbar("Sorry, but you can't login right now.", {
+      variant: "info",
     });
+    reset({
+      email: "",
+      password: "",
+    });
+    setLoading(false);
   };
 
   useEffect((): void => {

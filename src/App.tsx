@@ -15,7 +15,7 @@ const App = (): JSX.Element => {
   const [userState, setUserState] = useState({});
   let location = useLocation();
 
-  useEffect((): (() => void) => {
+  useEffect(() => {
     setUserState({
       user: supabase.auth.session(),
     });

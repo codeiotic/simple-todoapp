@@ -28,22 +28,6 @@ const SignUp = (): JSX.Element => {
     useForm<UserActivityInputInterface>();
 
   const onFormSubmit: SubmitHandler<UserActivityInputInterface> = (): void => {
-    // setLoading(true);
-    // userActivity({
-    //   email: email,
-    //   password: password,
-    //   type: "signUp",
-    //   finalCallback: (): void => {
-    //     setLoading(false);
-    //     location.push("/home");
-    //   },
-    // }).then(({ error, user }: UserActivityReturnInterface): void => {
-    //   if (error) {
-    //     enqueueSnackbar(error.message, { variant: "error" });
-    //   } else {
-    //     enqueueSnackbar("Signed up as " + user?.email, { variant: "success" });
-    //   }
-    // });
     setLoading(true);
     reset({
       email: "",

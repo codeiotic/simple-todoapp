@@ -45,8 +45,11 @@ const userActivity = async ({
 
     case "signUp":
       try {
-        let { error } = await supabase.auth.signOut();
-        return { error };
+        const { error, user } = await supabase.auth.signUp({
+          email,
+          password,
+        });
+        return { error, user };
       } catch (error) {
         throw new Error(error);
       } finally {
