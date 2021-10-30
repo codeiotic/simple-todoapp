@@ -35,6 +35,7 @@ const HeaderStyles = makeStyles((theme: Theme) =>
       alignItems: "center",
       justifyContent: "space-between",
       gap: "30px",
+      flexDirection: "row",
     },
     links: {
       textDecoration: "none",

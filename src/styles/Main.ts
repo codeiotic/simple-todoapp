@@ -39,11 +39,10 @@ const MainStyles = makeStyles((theme: Theme) =>
       minWidth: "50%",
     },
     button: {
-      marginBottom: "15px",
       width: "140px",
       maxWidth: "34%",
       minWidth: "120px",
-      height: "fit-content",
+      height: "40px",
       outline: "none",
       borderRadius: "5px",
       transition: "all 0.1s ease-in-out",
@@ -51,9 +50,6 @@ const MainStyles = makeStyles((theme: Theme) =>
       textAlign: "center",
       cursor: "pointer",
       boxShadow: theme.shadows[12],
-      "&:last-child": {
-        marginBottom: "20px",
-      },
       "&:active": {
         transform: "scale(1.01)",
       },
@@ -84,6 +80,12 @@ const MainStyles = makeStyles((theme: Theme) =>
       position: "absolute",
       left: "0",
       right: "0",
+    },
+    buttonWrapper: {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: "15%",
     },
   })
 );
