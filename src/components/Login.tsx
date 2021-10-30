@@ -1,41 +1,55 @@
 import { Divider, Switch, TextField } from "@material-ui/core";
-import { useSnackbar } from "notistack";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "../db/supabaseClient";
 import LogInStyles from "../styles/Login";
 import { useHistory } from "react-router-dom";
 import Loader from "react-loader-spinner";
 import UserContext from "../hooks/userContext";
-import { UserActivityInputInterface } from "../db/userActivity";
-import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { motion } from "framer-motion";
-import { Button } from "../components/Button";
 import {
   exitAnimations,
   initialAnimations,
   pageLoadAnimations,
   pageToPageTransition,
-} from "../utils/animations";
+} from "../utils";
+import { Button, Error } from ".";
+import userActivity from "../db/userActivity";
+import { validateForm } from "../utils";
+import { useSnackbar } from "notistack";
 
 const LogIn = (): JSX.Element => {
   const classNames = LogInStyles();
   const [checked, setChecked] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [error, setError] = useState<string>("");
   let location = useHistory();
-  const { enqueueSnackbar } = useSnackbar();
   const supabaseUser = supabase.auth.user();
-  const { reset, handleSubmit, control } =
-    useForm<UserActivityInputInterface>();
+  const { enqueueSnackbar } = useSnackbar();
 
-  const onFormSubmit: SubmitHandler<UserActivityInputInterface> = (): void => {
+  const onFormSubmit = (e: FormEvent): void => {
+    setError("");
+    e.preventDefault();
     setLoading(true);
-    enqueueSnackbar("Sorry, but you can't login right now.", {
-      variant: "info",
+    let foo = validateForm({
+      email,
+      password,
     });
-    reset({
-      email: "",
-      password: "",
+    foo.then((h) => {
+      if (h.err) {
+        setError(h.err);
+      } else if (h.value) {
+        userActivity({
+          email,
+          password,
+          type: "login",
+          finalCallback: () => {
+            enqueueSnackbar("Successfully Logged In", { variant: "success" });
+          },
+        });
+      }
     });
     setLoading(false);
   };
@@ -59,50 +73,30 @@ const LogIn = (): JSX.Element => {
             <div className={classNames.parent}>
               <h1 className={classNames.heading}>Log In</h1>
               <Divider className={classNames.divider} />
-              <form
-                className={classNames.form}
-                onSubmit={handleSubmit(onFormSubmit)}
-              >
-                <Controller
-                  control={control}
-                  name="email"
-                  defaultValue=""
-                  render={({ field: { onChange, value } }): JSX.Element => (
-                    <TextField
-                      className={classNames.emailInput}
-                      type="email"
-                      variant="filled"
-                      size="medium"
-                      label="Email"
-                      autoComplete="off"
-                      onChange={onChange}
-                      value={value}
-                      fullWidth
-                      required
-                    />
-                  )}
+              <form className={classNames.form} onSubmit={onFormSubmit}>
+                <TextField
+                  className={classNames.emailInput}
+                  type="email"
+                  variant="filled"
+                  size="medium"
+                  label="Email"
+                  autoComplete="off"
+                  onChange={(e) => setEmail(e.target.value)}
+                  value={email}
+                  fullWidth
+                  required
                 />
-                <Controller
-                  control={control}
-                  name="password"
-                  defaultValue=""
-                  rules={{
-                    required: true,
-                  }}
-                  render={({ field: { value, onChange } }): JSX.Element => (
-                    <TextField
-                      className={classNames.passwordInput}
-                      type={checked ? "text" : "password"}
-                      variant="filled"
-                      size="medium"
-                      label="Password"
-                      autoComplete="off"
-                      onChange={onChange}
-                      value={value}
-                      required
-                      fullWidth
-                    />
-                  )}
+                <TextField
+                  className={classNames.passwordInput}
+                  type={checked ? "text" : "password"}
+                  variant="filled"
+                  size="medium"
+                  label="Password"
+                  autoComplete="off"
+                  onChange={(e) => setPassword(e.target.value)}
+                  value={password}
+                  required
+                  fullWidth
                 />
                 <p className={classNames.showPwd}>Show password</p>
                 <Switch
@@ -114,6 +108,7 @@ const LogIn = (): JSX.Element => {
                     checked: boolean
                   ): void => setChecked(checked)}
                 />
+                {error ? <Error message={error.toString().slice(17)} /> : null}
                 <Divider className={classNames.buttonDivider} />
                 <div className={classNames.buttons}>
                   <Button
@@ -137,12 +132,11 @@ const LogIn = (): JSX.Element => {
                     variantType="secondary"
                     type="button"
                     variant="outlined"
-                    onClick={(): void =>
-                      reset({
-                        email: "",
-                        password: "",
-                      })
-                    }
+                    onClick={(): void => {
+                      setEmail("");
+                      setPassword("");
+                      setError("");
+                    }}
                     size="large"
                   >
                     Cancel

@@ -1,21 +1,19 @@
 import { Divider, TextField } from "@material-ui/core";
 import { useSnackbar } from "notistack";
-import { useEffect, useState } from "react";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { FormEvent, useEffect, useState } from "react";
 import Loader from "react-loader-spinner";
 import { useHistory } from "react-router";
 import { supabase } from "../db/supabaseClient";
-import { UserActivityInputInterface } from "../db/userActivity";
 import UserContext from "../hooks/userContext";
 import SettingsStyles from "../styles/Settings";
-import { Button } from "./Button";
 import { motion } from "framer-motion";
 import {
   exitAnimations,
   initialAnimations,
   pageLoadAnimations,
   pageToPageTransition,
-} from "../utils/animations";
+} from "../utils";
+import { Button } from ".";
 
 const Settings = (): JSX.Element => {
   const supabaseUser = supabase.auth.user();
@@ -23,6 +21,8 @@ const Settings = (): JSX.Element => {
   const location = useHistory();
   const [loading, setLoading] = useState<boolean>(false);
   const { enqueueSnackbar } = useSnackbar();
+  const [email, setEmail] = useState<string>(supabaseUser?.email);
+  const [password, setPassword] = useState<string>("");
 
   useEffect((): void => {
     if (!supabaseUser) {
@@ -30,20 +30,18 @@ const Settings = (): JSX.Element => {
     }
   }, [supabaseUser, location]);
 
-  const changeSettings: SubmitHandler<UserActivityInputInterface> =
-    (): void => {
-      /**
-       *  ! This not properly done
-       */
-      setLoading(true);
-      enqueueSnackbar("Sorry, this activity is prohibited", {
-        variant: "info",
-      });
-      setLoading(false);
-    };
+  const changeSettings = (e: FormEvent): void => {
+    e.preventDefault();
 
-  const { reset, handleSubmit, control } =
-    useForm<UserActivityInputInterface>();
+    /*
+     *  ! This not properly done
+     */
+    setLoading(true);
+    enqueueSnackbar("Sorry, this activity is prohibited", {
+      variant: "info",
+    });
+    setLoading(false);
+  };
 
   return (
     <motion.div
@@ -63,50 +61,31 @@ const Settings = (): JSX.Element => {
               ) : (
                 <>Note: You are not authenticated</>
               )}
-              <form
-                className={classNames.form}
-                onSubmit={handleSubmit(changeSettings)}
-              >
-                <Controller
-                  control={control}
-                  name="email"
-                  defaultValue={supabaseUser?.email || ""}
-                  render={({ field: { onChange, value } }): JSX.Element => (
-                    <TextField
-                      className={classNames.emailInput}
-                      type="email"
-                      variant="filled"
-                      size="medium"
-                      label="Update Email"
-                      autoComplete="off"
-                      onChange={onChange}
-                      value={value}
-                      fullWidth
-                      required
-                    />
-                  )}
+              <form className={classNames.form} onSubmit={changeSettings}>
+                <TextField
+                  className={classNames.emailInput}
+                  type="email"
+                  variant="filled"
+                  size="medium"
+                  label="Update Email"
+                  autoComplete="off"
+                  onChange={(e) => setEmail(e.target.value)}
+                  value={email}
+                  fullWidth
+                  required
                 />
-                <Controller
-                  control={control}
-                  name="password"
-                  defaultValue=""
-                  rules={{
-                    required: true,
-                  }}
-                  render={({ field: { value, onChange } }): JSX.Element => (
-                    <TextField
-                      className={classNames.passwordInput}
-                      type="password"
-                      variant="filled"
-                      size="medium"
-                      label="Update Password"
-                      autoComplete="off"
-                      onChange={onChange}
-                      value={value}
-                      required
-                      fullWidth
-                    />
-                  )}
+
+                <TextField
+                  className={classNames.passwordInput}
+                  type="password"
+                  variant="filled"
+                  size="medium"
+                  label="Update Password"
+                  autoComplete="off"
+                  onChange={(e) => setPassword(e.target.value)}
+                  value={password}
+                  required
+                  fullWidth
                 />
                 <Divider className={classNames.buttonDivider} />
                 <div className={classNames.buttons}>
@@ -131,12 +110,10 @@ const Settings = (): JSX.Element => {
                     variantType="secondary"
                     type="button"
                     variant="outlined"
-                    onClick={(): void =>
-                      reset({
-                        email: "",
-                        password: "",
-                      })
-                    }
+                    onClick={(): void => {
+                      setEmail("");
+                      setPassword("");
+                    }}
                     size="large"
                   >
                     Cancel

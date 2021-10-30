@@ -1,44 +1,57 @@
 import { Divider, Switch, TextField } from "@material-ui/core";
 import { motion } from "framer-motion";
-import { useSnackbar } from "notistack";
-import { ChangeEvent, useEffect, useState } from "react";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import Loader from "react-loader-spinner";
 import { Link, useHistory } from "react-router-dom";
 import { supabase } from "../db/supabaseClient";
-import { UserActivityInputInterface } from "../db/userActivity";
+import userActivity from "../db/userActivity";
 import UserContext from "../hooks/userContext";
 import SignUpStyles from "../styles/SignUp";
-import { Button } from "../components/Button";
 import {
   exitAnimations,
   initialAnimations,
   pageLoadAnimations,
   pageToPageTransition,
-} from "../utils/animations";
+} from "../utils";
+import { Button, Error } from ".";
+import { validateForm } from "../utils";
+import { useSnackbar } from "notistack";
 
 const SignUp = (): JSX.Element => {
-  const classNames = SignUpStyles();
   const [checked, setChecked] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-  const location = useHistory();
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [error, setError] = useState<string>("");
+  let location = useHistory();
   const supabaseUser = supabase.auth.user();
+  const classNames = SignUpStyles();
   const { enqueueSnackbar } = useSnackbar();
-  const { handleSubmit, reset, control } =
-    useForm<UserActivityInputInterface>();
 
-  const onFormSubmit: SubmitHandler<UserActivityInputInterface> = (): void => {
+  const onFormSubmit = (e: FormEvent): void => {
+    setError("");
+    e.preventDefault();
     setLoading(true);
-    reset({
-      email: "",
-      password: "",
+    let foo = validateForm({
+      email,
+      password,
     });
-    enqueueSnackbar("Sorry, currently we are not accepting any sign ups", {
-      variant: "info",
+    foo.then((h) => {
+      if (h.err) {
+        setError(h.err);
+      } else if (h.value) {
+        userActivity({
+          email,
+          password,
+          type: "signUp",
+          finalCallback: () => {
+            enqueueSnackbar("Successfully Logged In", { variant: "success" });
+          },
+        });
+      }
     });
     setLoading(false);
   };
-
   useEffect((): void => {
     if (supabaseUser) {
       location.push("/home");
@@ -58,50 +71,30 @@ const SignUp = (): JSX.Element => {
             <div className={classNames.parent}>
               <h1 className={classNames.heading}>Sign Up</h1>
               <Divider className={classNames.divider} />
-              <form
-                className={classNames.form}
-                onSubmit={handleSubmit(onFormSubmit)}
-              >
-                <Controller
-                  control={control}
-                  name="email"
-                  defaultValue=""
-                  render={({ field: { onChange, value } }): JSX.Element => (
-                    <TextField
-                      className={classNames.emailInput}
-                      type="email"
-                      variant="filled"
-                      size="medium"
-                      label="Email"
-                      autoComplete="off"
-                      onChange={onChange}
-                      value={value}
-                      fullWidth
-                      required
-                    />
-                  )}
+              <form className={classNames.form} onSubmit={onFormSubmit}>
+                <TextField
+                  className={classNames.emailInput}
+                  type="email"
+                  variant="filled"
+                  size="medium"
+                  label="Email"
+                  autoComplete="off"
+                  onChange={(e) => setEmail(e.target.value)}
+                  value={email}
+                  fullWidth
+                  required
                 />
-                <Controller
-                  control={control}
-                  name="password"
-                  defaultValue=""
-                  rules={{
-                    required: true,
-                  }}
-                  render={({ field: { value, onChange } }): JSX.Element => (
-                    <TextField
-                      className={classNames.passwordInput}
-                      type={checked ? "text" : "password"}
-                      variant="filled"
-                      size="medium"
-                      label="Password"
-                      autoComplete="off"
-                      onChange={onChange}
-                      value={value}
-                      required
-                      fullWidth
-                    />
-                  )}
+                <TextField
+                  className={classNames.passwordInput}
+                  type={checked ? "text" : "password"}
+                  variant="filled"
+                  size="medium"
+                  label="Password"
+                  autoComplete="off"
+                  onChange={(e) => setPassword(e.target.value)}
+                  value={password}
+                  required
+                  fullWidth
                 />
                 <p className={classNames.showPwd}>Show password</p>
                 <Switch
@@ -113,6 +106,7 @@ const SignUp = (): JSX.Element => {
                     checked: boolean
                   ): void => setChecked(checked)}
                 />
+                {error ? <Error message={error.toString().slice(17)} /> : null}
                 <Divider className={classNames.buttonDivider} />
                 <div className={classNames.buttons}>
                   <Button
@@ -136,12 +130,11 @@ const SignUp = (): JSX.Element => {
                     variantType="secondary"
                     type="button"
                     variant="outlined"
-                    onClick={() =>
-                      reset({
-                        email: "",
-                        password: "",
-                      })
-                    }
+                    onClick={() => {
+                      setPassword("");
+                      setEmail("");
+                      setError("");
+                    }}
                     size="large"
                   >
                     Cancel
