@@ -1,14 +1,6 @@
-import { Session } from "@supabase/gotrue-js";
-import { createContext } from "react";
+import { Context, createContext } from "react";
+import { User } from "firebase/auth";
 
-export interface UserContextInterface {
-  user?: Session | {};
-  setUser: (session: Session) => void;
-}
-
-const UserContext = createContext<UserContextInterface>({
-  user: {},
-  setUser: (): void => {},
-});
+const UserContext: Context<User> = createContext<User | null>(null);
 
 export default UserContext;

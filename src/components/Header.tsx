@@ -1,26 +1,31 @@
 import { useSnackbar } from "notistack";
-import { FC, useState } from "react";
+import { FC, useContext, useState } from "react";
 import Loader from "react-loader-spinner";
 import { Link } from "react-router-dom";
 import { Button } from ".";
-import { supabase } from "../db/supabaseClient";
+import { signOut, User } from "firebase/auth";
 import UserContext from "../hooks/userContext";
 import HeaderStyles from "../styles/Header";
+import { auth } from "../db/firebase";
 
 const Header: FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const classNames = HeaderStyles();
   const { enqueueSnackbar } = useSnackbar();
-  const supabaseUser = supabase.auth.user();
+  const user: User = useContext(UserContext);
 
-  const signOutUser = async (): Promise<void> => {
+  const signOutUser: () => Promise<void> = async (): Promise<void> => {
     setLoading(true);
-    let { error } = await supabase.auth.signOut();
-    if (error) {
-      enqueueSnackbar(error.message, { variant: "error" });
-    } else {
-      enqueueSnackbar("Successfully logged out", { variant: "success" });
-    }
+
+    signOut(auth)
+      .then(() => {
+        enqueueSnackbar("Successfully logged out", { variant: "success" });
+      })
+      .catch((error) => {
+        console.log(error);
+        enqueueSnackbar(error.message, { variant: "error" });
+      });
+
     setLoading(false);
   };
 
@@ -39,7 +44,7 @@ const Header: FC = () => {
           </div>
           <nav>
             <div className={classNames.linkParent}>
-              {supabaseUser ? (
+              {user ? (
                 <>
                   <Link to="/login" className={classNames.links}>
                     <Button

@@ -115,7 +115,7 @@ const modalBody: FC<ModalComponentProps> = ({
           className={className.editButton}
           disabled={disabled}
         >
-          Change Todo
+          Update
         </Button>
         <Button
           variant="contained"
@@ -123,7 +123,7 @@ const modalBody: FC<ModalComponentProps> = ({
           className={className.deleteButton}
           onClick={deleteTodoHandler}
         >
-          Delete Todo
+          Delete
         </Button>
       </div>
       <div className={className.time}>

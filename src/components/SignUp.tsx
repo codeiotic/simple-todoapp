@@ -1,10 +1,15 @@
 import { Divider, Switch, TextField } from "@material-ui/core";
 import { motion } from "framer-motion";
-import { ChangeEvent, FC, FormEvent, useEffect, useState } from "react";
+import {
+  ChangeEvent,
+  FC,
+  FormEvent,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import Loader from "react-loader-spinner";
 import { Link, useHistory } from "react-router-dom";
-import { supabase } from "../db/supabaseClient";
-import userActivity from "../db/userActivity";
 import UserContext from "../hooks/userContext";
 import SignUpStyles from "../styles/SignUp";
 import {
@@ -16,6 +21,12 @@ import {
 import { Button, Error } from ".";
 import { validateForm } from "../utils";
 import { useSnackbar } from "notistack";
+import {
+  createUserWithEmailAndPassword,
+  User,
+  UserCredential,
+} from "firebase/auth";
+import { auth } from "../db/firebase";
 
 const SignUp: FC = () => {
   const [checked, setChecked] = useState<boolean>(false);
@@ -24,7 +35,7 @@ const SignUp: FC = () => {
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
   let location = useHistory();
-  const supabaseUser = supabase.auth.user();
+  const User: User = useContext(UserContext);
   const classNames = SignUpStyles();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -32,31 +43,32 @@ const SignUp: FC = () => {
     setError("");
     e.preventDefault();
     setLoading(true);
-    let foo = validateForm({
+    let validate = validateForm({
       email,
       password,
     });
-    foo.then((h) => {
-      if (h.err) {
-        setError(h.err);
-      } else if (h.value) {
-        userActivity({
-          email,
-          password,
-          type: "signUp",
-          finalCallback: () => {
-            enqueueSnackbar("Successfully Logged In", { variant: "success" });
-          },
-        });
+    validate.then((res) => {
+      if (res.err) {
+        setError(res.err);
+      } else if (res.value) {
+        createUserWithEmailAndPassword(auth, email, password)
+          .then((userCredential: UserCredential) => {
+            const user: User = userCredential.user;
+            console.log(user);
+            enqueueSnackbar("Successfully logged in", { variant: "success" });
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       }
     });
     setLoading(false);
   };
   useEffect((): void => {
-    if (supabaseUser) {
+    if (User) {
       location.push("/home");
     }
-  }, [supabaseUser, location]);
+  }, [User, location]);
 
   return (
     <motion.div
@@ -79,7 +91,9 @@ const SignUp: FC = () => {
                   size="medium"
                   label="Email"
                   autoComplete="off"
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
+                    setEmail(e.target.value)
+                  }
                   value={email}
                   fullWidth
                   required
@@ -91,7 +105,9 @@ const SignUp: FC = () => {
                   size="medium"
                   label="Password"
                   autoComplete="off"
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
+                    setPassword(e.target.value)
+                  }
                   value={password}
                   required
                   fullWidth

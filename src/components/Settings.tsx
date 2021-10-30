@@ -1,9 +1,15 @@
 import { Divider, TextField } from "@material-ui/core";
 import { useSnackbar } from "notistack";
-import { FC, FormEvent, useEffect, useState } from "react";
+import {
+  ChangeEvent,
+  FC,
+  FormEvent,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import Loader from "react-loader-spinner";
 import { useHistory } from "react-router";
-import { supabase } from "../db/supabaseClient";
 import UserContext from "../hooks/userContext";
 import SettingsStyles from "../styles/Settings";
 import { motion } from "framer-motion";
@@ -14,28 +20,25 @@ import {
   pageToPageTransition,
 } from "../utils";
 import { Button } from ".";
+import { User } from "firebase/auth";
 
 const Settings: FC = () => {
-  const supabaseUser = supabase.auth.user();
+  const User: User = useContext(UserContext);
   const classNames = SettingsStyles();
   const location = useHistory();
   const [loading, setLoading] = useState<boolean>(false);
   const { enqueueSnackbar } = useSnackbar();
-  const [email, setEmail] = useState<string>(supabaseUser?.email);
+  const [email, setEmail] = useState<string>(User?.email);
   const [password, setPassword] = useState<string>("");
 
   useEffect((): void => {
-    if (!supabaseUser) {
+    if (!User) {
       location.push("/login");
     }
-  }, [supabaseUser, location]);
+  }, [User, location]);
 
   const changeSettings = (e: FormEvent): void => {
     e.preventDefault();
-
-    /*
-     *  ! This not properly done
-     */
     setLoading(true);
     enqueueSnackbar("Sorry, this activity is prohibited", {
       variant: "info",
@@ -56,11 +59,6 @@ const Settings: FC = () => {
             <div className={classNames.parent}>
               <h1 className={classNames.heading}>Settings</h1>
               <Divider className={classNames.divider} />
-              {supabaseUser?.aud === "authenticated" ? (
-                <></>
-              ) : (
-                <>Note: You are not authenticated</>
-              )}
               <form className={classNames.form} onSubmit={changeSettings}>
                 <TextField
                   className={classNames.emailInput}
@@ -69,7 +67,9 @@ const Settings: FC = () => {
                   size="medium"
                   label="Update Email"
                   autoComplete="off"
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
+                    setEmail(e.target.value)
+                  }
                   value={email}
                   fullWidth
                   required
@@ -82,7 +82,9 @@ const Settings: FC = () => {
                   size="medium"
                   label="Update Password"
                   autoComplete="off"
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
+                    setPassword(e.target.value)
+                  }
                   value={password}
                   required
                   fullWidth

@@ -1,7 +1,13 @@
 import { Divider, Switch, TextField } from "@material-ui/core";
-import { ChangeEvent, FC, FormEvent, useEffect, useState } from "react";
+import {
+  ChangeEvent,
+  FC,
+  FormEvent,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { Link } from "react-router-dom";
-import { supabase } from "../db/supabaseClient";
 import LogInStyles from "../styles/Login";
 import { useHistory } from "react-router-dom";
 import Loader from "react-loader-spinner";
@@ -14,9 +20,10 @@ import {
   pageToPageTransition,
 } from "../utils";
 import { Button, Error } from ".";
-import userActivity from "../db/userActivity";
 import { validateForm } from "../utils";
 import { useSnackbar } from "notistack";
+import { signInWithEmailAndPassword, UserCredential } from "firebase/auth";
+import { auth } from "../db/firebase";
 
 const LogIn: FC = () => {
   const classNames = LogInStyles();
@@ -26,8 +33,8 @@ const LogIn: FC = () => {
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
   let location = useHistory();
-  const supabaseUser = supabase.auth.user();
   const { enqueueSnackbar } = useSnackbar();
+  const User = useContext(UserContext);
 
   const onFormSubmit = (e: FormEvent): void => {
     setError("");
@@ -41,24 +48,24 @@ const LogIn: FC = () => {
       if (h.err) {
         setError(h.err);
       } else if (h.value) {
-        userActivity({
-          email,
-          password,
-          type: "login",
-          finalCallback: () => {
+        signInWithEmailAndPassword(auth, email, password)
+          .then((user: UserCredential) => {
+            console.log(user);
             enqueueSnackbar("Successfully Logged In", { variant: "success" });
-          },
-        });
+          })
+          .catch((error) =>
+            enqueueSnackbar(error.message, { variant: "error" })
+          );
       }
     });
     setLoading(false);
   };
 
   useEffect((): void => {
-    if (supabaseUser) {
+    if (User) {
       location.push("/home");
     }
-  }, [supabaseUser, location]);
+  }, [User, location]);
 
   return (
     <motion.div
