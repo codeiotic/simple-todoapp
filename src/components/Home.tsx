@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { FC } from "react";
 import HomeStyles from "../styles/Home";
 import {
   exitAnimations,
@@ -7,7 +8,7 @@ import {
   pageToPageTransition,
 } from "../utils";
 
-const Home = (): JSX.Element => {
+const Home: FC = () => {
   const classNames = HomeStyles();
 
   return (

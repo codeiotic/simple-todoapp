@@ -1,5 +1,5 @@
 import { Divider, Switch, TextField } from "@material-ui/core";
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { ChangeEvent, FC, FormEvent, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "../db/supabaseClient";
 import LogInStyles from "../styles/Login";
@@ -18,7 +18,7 @@ import userActivity from "../db/userActivity";
 import { validateForm } from "../utils";
 import { useSnackbar } from "notistack";
 
-const LogIn = (): JSX.Element => {
+const LogIn: FC = () => {
   const classNames = LogInStyles();
   const [checked, setChecked] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);

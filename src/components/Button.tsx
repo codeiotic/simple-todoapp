@@ -1,6 +1,6 @@
 import { Button as InternalButton } from "@material-ui/core";
 import { motion } from "framer-motion";
-import { ButtonHTMLAttributes, PropsWithChildren } from "react";
+import { ButtonHTMLAttributes, FC, PropsWithChildren } from "react";
 import ButtonStyles from "../styles/Button";
 
 interface ButtonProps
@@ -28,7 +28,7 @@ interface ButtonProps
  * </Button>
  * @see /components/Button.tsx
  */
-export const Button = ({
+export const Button: FC<ButtonProps> = ({
   children,
   variantType,
   type,
@@ -36,7 +36,7 @@ export const Button = ({
   style,
   size,
   onClick,
-}: ButtonProps): JSX.Element => {
+}) => {
   const styles = ButtonStyles();
 
   return (

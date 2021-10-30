@@ -1,6 +1,6 @@
 import { Divider, TextField } from "@material-ui/core";
 import { useSnackbar } from "notistack";
-import { FormEvent, useEffect, useState } from "react";
+import { FC, FormEvent, useEffect, useState } from "react";
 import Loader from "react-loader-spinner";
 import { useHistory } from "react-router";
 import { supabase } from "../db/supabaseClient";
@@ -15,7 +15,7 @@ import {
 } from "../utils";
 import { Button } from ".";
 
-const Settings = (): JSX.Element => {
+const Settings: FC = () => {
   const supabaseUser = supabase.auth.user();
   const classNames = SettingsStyles();
   const location = useHistory();

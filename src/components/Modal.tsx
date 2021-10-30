@@ -2,6 +2,7 @@ import { Button, Divider, TextField } from "@material-ui/core";
 import {
   ChangeEvent,
   Dispatch,
+  FC,
   SetStateAction,
   useEffect,
   useState,
@@ -19,12 +20,12 @@ export interface ModalComponentProps {
   modalOpenBooleanValue: boolean;
 }
 
-const modalBody = ({
+const modalBody: FC<ModalComponentProps> = ({
   todoState,
   todosArray,
   modalOpenBoolean,
   modalOpenBooleanValue,
-}: ModalComponentProps): JSX.Element => {
+}) => {
   /* eslint-disable */
   const className = modalStyles();
   const [value, setValue] = useState<string>(todoState.todos);

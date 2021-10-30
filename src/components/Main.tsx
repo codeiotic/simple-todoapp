@@ -1,4 +1,4 @@
-import { ChangeEvent, MouseEvent, useEffect, useState } from "react";
+import { ChangeEvent, FC, MouseEvent, useEffect, useState } from "react";
 import {
   Backdrop,
   Button,
@@ -32,7 +32,7 @@ import {
 import { modalBody, TodoItem } from ".";
 import { maxIndexValue, validateTodo } from "../utils";
 
-export default function Main(): JSX.Element {
+const Main: FC = () => {
   const className = MainStyles();
   const { enqueueSnackbar } = useSnackbar();
   const [value, setValue] = useState<string>("");
@@ -139,24 +139,26 @@ export default function Main(): JSX.Element {
               fullWidth
               className={className.input}
             />
-            <Button
-              variant="contained"
-              color="primary"
-              type="submit"
-              className={className.button}
-              onClick={addTodoHandler}
-            >
-              Add
-            </Button>
-            <Button
-              className={className.button}
-              variant="contained"
-              color="secondary"
-              onClick={clearTodosHandler}
-              type="button"
-            >
-              Clear All
-            </Button>
+            <div className={className.buttonWrapper}>
+              <Button
+                variant="contained"
+                color="primary"
+                type="submit"
+                className={className.button}
+                onClick={addTodoHandler}
+              >
+                Add
+              </Button>
+              <Button
+                className={className.button}
+                variant="contained"
+                color="secondary"
+                onClick={clearTodosHandler}
+                type="button"
+              >
+                Clear All
+              </Button>
+            </div>
           </form>
 
           <DragDropContext onDragEnd={handleDragEnd}>
@@ -235,4 +237,6 @@ export default function Main(): JSX.Element {
       />
     </motion.div>
   );
-}
+};
+
+export default Main;

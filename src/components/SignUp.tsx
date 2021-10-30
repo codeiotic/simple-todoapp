@@ -1,6 +1,6 @@
 import { Divider, Switch, TextField } from "@material-ui/core";
 import { motion } from "framer-motion";
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { ChangeEvent, FC, FormEvent, useEffect, useState } from "react";
 import Loader from "react-loader-spinner";
 import { Link, useHistory } from "react-router-dom";
 import { supabase } from "../db/supabaseClient";
@@ -17,7 +17,7 @@ import { Button, Error } from ".";
 import { validateForm } from "../utils";
 import { useSnackbar } from "notistack";
 
-const SignUp = (): JSX.Element => {
+const SignUp: FC = () => {
   const [checked, setChecked] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [email, setEmail] = useState<string>("");

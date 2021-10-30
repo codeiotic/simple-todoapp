@@ -1,5 +1,5 @@
 import { useSnackbar } from "notistack";
-import { useState } from "react";
+import { FC, useState } from "react";
 import Loader from "react-loader-spinner";
 import { Link } from "react-router-dom";
 import { Button } from ".";
@@ -7,7 +7,7 @@ import { supabase } from "../db/supabaseClient";
 import UserContext from "../hooks/userContext";
 import HeaderStyles from "../styles/Header";
 
-const Header = (): JSX.Element => {
+const Header: FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const classNames = HeaderStyles();
   const { enqueueSnackbar } = useSnackbar();
@@ -58,6 +58,11 @@ const Header = (): JSX.Element => {
                       ) : (
                         "Sign Out"
                       )}
+                    </Button>
+                  </Link>
+                  <Link to="/home" className={classNames.links}>
+                    <Button variant="outlined" variantType="secondary">
+                      Home
                     </Button>
                   </Link>
                 </>

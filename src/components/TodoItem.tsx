@@ -12,7 +12,7 @@ import { DraggableProvided } from "react-beautiful-dnd";
 import useLocalStorage from "../hooks/useLocalStorage";
 import ReactHtmlParser from "react-html-parser";
 import { FiChevronDown, FiChevronUp } from "react-icons/fi";
-import { MouseEvent, useEffect, useState } from "react";
+import { FC, MouseEvent, useEffect, useState } from "react";
 import TodoItemStyles from "../styles/TodoItem";
 import moment from "moment";
 import { truncate } from "../utils";
@@ -33,7 +33,7 @@ export interface ListItemProps {
   deleteTodo: (index: number) => void;
 }
 
-const TodoItem = ({
+const TodoItem: FC<ListItemProps> = ({
   todos,
   completed,
   todoIndex,
@@ -42,7 +42,7 @@ const TodoItem = ({
   time,
   handleModalOpen,
   deleteTodo,
-}: ListItemProps): JSX.Element => {
+}) => {
   const { todosArray } = useLocalStorage();
   const className = TodoItemStyles();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
