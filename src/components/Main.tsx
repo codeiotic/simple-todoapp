@@ -17,11 +17,7 @@ import { useSnackbar } from "notistack";
 import { TodosSchema } from "../hooks/useLocalStorage";
 import { DraggableProvided, DroppableProvided } from "react-beautiful-dnd";
 import FlipMove from "react-flip-move";
-import TodoItem from "./TodoItem";
-import modalBody from "./Modal";
 import useLocalStorage from "../hooks/useLocalStorage";
-import maxIndexValue from "../utils/lastIndexValue";
-import validateTodo from "../utils/validate";
 import MainStyles from "../styles/Main";
 import "../styles.css";
 import { useHistory } from "react-router";
@@ -32,7 +28,9 @@ import {
   initialAnimations,
   pageLoadAnimations,
   pageToPageTransition,
-} from "../utils/animations";
+} from "../utils";
+import { modalBody, TodoItem } from ".";
+import { maxIndexValue, validateTodo } from "../utils";
 
 export default function Main(): JSX.Element {
   const className = MainStyles();

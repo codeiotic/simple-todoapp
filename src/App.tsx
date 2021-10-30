@@ -1,15 +1,10 @@
 import { Switch, Route, useLocation } from "react-router-dom";
-import Main from "./components/Main";
-import LogIn from "./components/Login";
-import SignUp from "./components/SignUp";
-import Home from "./components/Home";
-import Header from "./components/Header";
 import { useEffect, useState } from "react";
 import { supabase } from "./db/supabaseClient";
 import { AuthChangeEvent, Session } from "@supabase/gotrue-js";
 import UserContext from "./hooks/userContext";
-import Settings from "./components/Settings";
 import { AnimatePresence } from "framer-motion";
+import { Header, Home, LogIn, Main, Settings, SignUp } from "./components";
 
 const App = (): JSX.Element => {
   const [userState, setUserState] = useState({});

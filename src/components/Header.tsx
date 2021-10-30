@@ -2,10 +2,10 @@ import { useSnackbar } from "notistack";
 import { useState } from "react";
 import Loader from "react-loader-spinner";
 import { Link } from "react-router-dom";
+import { Button } from ".";
 import { supabase } from "../db/supabaseClient";
 import UserContext from "../hooks/userContext";
 import HeaderStyles from "../styles/Header";
-import { Button } from "../components/Button";
 
 const Header = (): JSX.Element => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -41,23 +41,25 @@ const Header = (): JSX.Element => {
             <div className={classNames.linkParent}>
               {supabaseUser ? (
                 <>
-                  <Button
-                    variant="contained"
-                    type="submit"
-                    variantType="primary"
-                    onClick={signOutUser}
-                  >
-                    {loading ? (
-                      <Loader
-                        type="Oval"
-                        color="#002233"
-                        height="24"
-                        width="42"
-                      />
-                    ) : (
-                      "Sign Out"
-                    )}
-                  </Button>
+                  <Link to="/login" className={classNames.links}>
+                    <Button
+                      variant="contained"
+                      type="submit"
+                      variantType="primary"
+                      onClick={signOutUser}
+                    >
+                      {loading ? (
+                        <Loader
+                          type="Oval"
+                          color="#002233"
+                          height="24"
+                          width="42"
+                        />
+                      ) : (
+                        "Sign Out"
+                      )}
+                    </Button>
+                  </Link>
                 </>
               ) : (
                 <>

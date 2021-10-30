@@ -5,7 +5,7 @@ import {
   initialAnimations,
   pageLoadAnimations,
   pageToPageTransition,
-} from "../utils/animations";
+} from "../utils";
 
 const Home = (): JSX.Element => {
   const classNames = HomeStyles();

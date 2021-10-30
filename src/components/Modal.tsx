@@ -9,9 +9,8 @@ import {
 import useLocalStorage, { TodosSchema } from "../hooks/useLocalStorage";
 import modalStyles from "../styles/Modal";
 import { useSnackbar } from "notistack";
-import getTodoIndex from "../utils/getTodoIndex";
-import validateTodo from "../utils/validate";
 import moment from "moment";
+import { getTodoIndex, validateTodo } from "../utils";
 
 export interface ModalComponentProps {
   todoState: TodosSchema;

@@ -14,8 +14,8 @@ import ReactHtmlParser from "react-html-parser";
 import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 import { MouseEvent, useEffect, useState } from "react";
 import TodoItemStyles from "../styles/TodoItem";
-import truncate from "../utils/truncate";
 import moment from "moment";
+import { truncate } from "../utils";
 
 export interface ListItemProps {
   todos: string;
