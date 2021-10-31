@@ -16,16 +16,13 @@ const Header: FC = () => {
 
   const signOutUser: () => Promise<void> = async (): Promise<void> => {
     setLoading(true);
-
     signOut(auth)
       .then(() => {
         enqueueSnackbar("Successfully logged out", { variant: "success" });
       })
       .catch((error) => {
-        console.log(error);
         enqueueSnackbar(error.message, { variant: "error" });
       });
-
     setLoading(false);
   };
 

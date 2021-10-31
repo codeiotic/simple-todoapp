@@ -21,11 +21,7 @@ import {
 import { Button, Error } from ".";
 import { validateForm } from "../utils";
 import { useSnackbar } from "notistack";
-import {
-  createUserWithEmailAndPassword,
-  User,
-  UserCredential,
-} from "firebase/auth";
+import { createUserWithEmailAndPassword, User } from "firebase/auth";
 import { auth } from "../db/firebase";
 
 const SignUp: FC = () => {
@@ -50,19 +46,19 @@ const SignUp: FC = () => {
     validate.then((res) => {
       if (res.err) {
         setError(res.err);
+        setLoading(false);
       } else if (res.value) {
         createUserWithEmailAndPassword(auth, email, password)
-          .then((userCredential: UserCredential) => {
-            const user: User = userCredential.user;
-            console.log(user);
+          .then(() => {
             enqueueSnackbar("Successfully logged in", { variant: "success" });
+            setLoading(false);
           })
           .catch((err) => {
-            console.log(err);
+            enqueueSnackbar(err.message, { variant: "error" });
+            setLoading(false);
           });
       }
     });
-    setLoading(false);
   };
   useEffect((): void => {
     if (User) {

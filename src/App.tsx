@@ -14,6 +14,8 @@ const App: FC = () => {
     let unsubscibe: Unsubscribe = onAuthStateChanged(auth, (user: User) => {
       if (user) {
         setUser(user);
+      } else {
+        setUser(null);
       }
     });
 

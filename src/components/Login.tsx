@@ -22,7 +22,7 @@ import {
 import { Button, Error } from ".";
 import { validateForm } from "../utils";
 import { useSnackbar } from "notistack";
-import { signInWithEmailAndPassword, UserCredential } from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../db/firebase";
 
 const LogIn: FC = () => {
@@ -37,28 +37,29 @@ const LogIn: FC = () => {
   const User = useContext(UserContext);
 
   const onFormSubmit = (e: FormEvent): void => {
-    setError("");
-    e.preventDefault();
     setLoading(true);
-    let foo = validateForm({
+    e.preventDefault();
+    setError("");
+    let validation = validateForm({
       email,
       password,
     });
-    foo.then((h) => {
-      if (h.err) {
-        setError(h.err);
-      } else if (h.value) {
+    validation.then((error) => {
+      if (error.err) {
+        setError(error.err);
+        setLoading(false);
+      } else if (error.value) {
         signInWithEmailAndPassword(auth, email, password)
-          .then((user: UserCredential) => {
-            console.log(user);
+          .then(() => {
             enqueueSnackbar("Successfully Logged In", { variant: "success" });
+            setLoading(false);
           })
-          .catch((error) =>
-            enqueueSnackbar(error.message, { variant: "error" })
-          );
+          .catch((error) => {
+            enqueueSnackbar(error.message, { variant: "error" });
+            setLoading(false);
+          });
       }
     });
-    setLoading(false);
   };
 
   useEffect((): void => {
