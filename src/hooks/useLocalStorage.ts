@@ -95,19 +95,28 @@ function useLocalStorage(): ReturnInterface {
     element: HTMLSpanElement,
     index?: number
   ): void => {
-    if (completeOrNot) {
-      todo.completed = true;
-      todos[todo.index - 1] = todo;
-      setTodos(todos);
-      localStorage.setItem("todos", JSON.stringify(todosArray));
-      element.innerHTML = todo.todos.strike();
-    } else {
-      todo.completed = false;
-      todos[todo.index - 1] = todo;
-      setTodos(todos);
-      localStorage.setItem("todos", JSON.stringify(todosArray));
-      element.innerHTML = todo.todos;
-    }
+    console.log(todos[index], "I DON'T KNOW WHAT THHIS IS");
+    todo.completed = completeOrNot;
+    todos[index] = todo;
+    setTodos(todos);
+    console.log(todos);
+    localStorage.setItem("todos", JSON.stringify(todosArray));
+    // console.log(todos[todo.index - 1], "todo in local storage");
+
+    // console.log(todo, "The todo passed");
+
+    // if (completeOrNot) {
+    //   todo.completed = true;
+    //   todos[todo.index - 1] = todo;
+    //   setTodos(todos);
+    //   element.innerHTML = todo.todos.strike();
+    // } else {
+    //   todo.completed = false;
+    //   todos[todo.index - 1] = todo;
+    //   setTodos(todos);
+    //   localStorage.setItem("todos", JSON.stringify(todosArray));
+    //   element.innerHTML = todo.todos;
+    // }
   };
 
   /**
@@ -142,6 +151,7 @@ function useLocalStorage(): ReturnInterface {
   }: UpdateTodoProps): void => {
     if (content) {
       todos.map((todo: TodosSchema): void => {
+        console.log(content);
         if (todo.index === index) {
           todo.todos = content.todos;
           todo.time = content.time;

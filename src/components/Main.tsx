@@ -114,6 +114,7 @@ const Main: FC = () => {
     let items: TodosSchema[] = Array.from(todosArray);
     let [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
+    console.log(items);
     updateTodo({ newTodosArr: items });
   };
 
