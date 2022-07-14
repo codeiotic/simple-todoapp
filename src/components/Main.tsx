@@ -1,4 +1,11 @@
-import { ChangeEvent, FC, MouseEvent, useEffect, useState } from "react";
+import {
+  ChangeEvent,
+  FC,
+  MouseEvent,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import {
   Backdrop,
   Button,
@@ -21,7 +28,6 @@ import useLocalStorage from "../hooks/useLocalStorage";
 import MainStyles from "../styles/Main";
 import "../styles.css";
 import { useHistory } from "react-router";
-import { supabase } from "../db/supabaseClient";
 import { motion } from "framer-motion";
 import {
   exitAnimations,
@@ -31,6 +37,8 @@ import {
 } from "../utils";
 import { modalBody, TodoItem } from ".";
 import { maxIndexValue, validateTodo } from "../utils";
+import UserContext from "../hooks/userContext";
+import { User } from "firebase/auth";
 
 const Main: FC = () => {
   const className = MainStyles();
@@ -44,7 +52,7 @@ const Main: FC = () => {
     time: "",
   });
   const location = useHistory();
-  const supabaseUser = supabase.auth.user();
+  const User: User = useContext(UserContext);
 
   const { todosArray, clearTodos, addTodo, deleteTodo, updateTodo } =
     useLocalStorage();
@@ -76,7 +84,6 @@ const Main: FC = () => {
     if (todosArray.length === 0) {
       enqueueSnackbar("No todos to clear", {
         variant: "warning",
-        autoHideDuration: 2000,
       });
     } else {
       clearTodos();
@@ -104,9 +111,10 @@ const Main: FC = () => {
 
   const handleDragEnd = (result: DropResult): void => {
     if (!result.destination) return;
-    let items = Array.from(todosArray);
+    let items: TodosSchema[] = Array.from(todosArray);
     let [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
+    console.log(items);
     updateTodo({ newTodosArr: items });
   };
 
@@ -115,10 +123,10 @@ const Main: FC = () => {
   };
 
   useEffect((): void => {
-    if (!supabaseUser) {
+    if (!User) {
       location.push("/login");
     }
-  }, [supabaseUser, location]);
+  }, [User, location]);
 
   return (
     <motion.div

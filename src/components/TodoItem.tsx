@@ -1,5 +1,6 @@
 import {
   Button,
+  Checkbox,
   Divider,
   ListItem,
   ListItemIcon,
@@ -12,7 +13,7 @@ import { DraggableProvided } from "react-beautiful-dnd";
 import useLocalStorage from "../hooks/useLocalStorage";
 import ReactHtmlParser from "react-html-parser";
 import { FiChevronDown, FiChevronUp } from "react-icons/fi";
-import { FC, MouseEvent, useEffect, useState } from "react";
+import { ChangeEvent, FC, MouseEvent, useEffect, useState } from "react";
 import TodoItemStyles from "../styles/TodoItem";
 import moment from "moment";
 import { truncate } from "../utils";
@@ -48,10 +49,11 @@ const TodoItem: FC<ListItemProps> = ({
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [updatedTime, setUpdatedTime] = useState(moment(time).fromNow());
 
-  let menuOpen = Boolean(anchorEl);
-  const matches = useMediaQuery("(min-width:600px)");
+  let menuOpen: boolean = Boolean(anchorEl);
+  const matches: boolean = useMediaQuery("(min-width:600px)");
+  const { completeTodo } = useLocalStorage();
 
-  const handleMenuClose = (): void => {
+  const handleMenuClose: () => void = (): void => {
     setAnchorEl(null);
   };
 
@@ -60,7 +62,7 @@ const TodoItem: FC<ListItemProps> = ({
   };
 
   useEffect((): (() => void) => {
-    let handle = setInterval((): void => {
+    let handle: NodeJS.Timer = setInterval((): void => {
       setUpdatedTime(moment(time).fromNow());
     }, 10000);
 
@@ -71,11 +73,25 @@ const TodoItem: FC<ListItemProps> = ({
 
   return (
     <ListItem
+      data-id={String(todoIndex)}
       className={className.list}
       ref={provided.innerRef}
       {...provided.draggableProps}
       {...provided.dragHandleProps}
     >
+      <Checkbox
+        value={completed}
+        onChange={(e: ChangeEvent<HTMLInputElement>, b: boolean) => {
+          // mark this todo as completed!
+          completeTodo(
+            todosArray[todoArrayIndex],
+            b,
+            document.getElementById(String(todoIndex)),
+            todoArrayIndex
+          );
+          console.log(todosArray[todoArrayIndex]);
+        }}
+      />
       <ListItemText
         id={String(todoIndex)}
         onClick={(): void => handleModalOpen(todos, completed, todoIndex, time)}

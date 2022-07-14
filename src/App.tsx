@@ -1,35 +1,29 @@
 import { Switch, Route, useLocation } from "react-router-dom";
 import { FC, useEffect, useState } from "react";
-import { supabase } from "./db/supabaseClient";
-import { AuthChangeEvent, Session } from "@supabase/gotrue-js";
 import UserContext from "./hooks/userContext";
 import { AnimatePresence } from "framer-motion";
 import { Header, Home, LogIn, Main, Settings, SignUp } from "./components";
+import { auth } from "./db/firebase";
+import { onAuthStateChanged, User, Unsubscribe } from "firebase/auth";
 
 const App: FC = () => {
-  const [userState, setUserState] = useState({});
+  const [user, setUser] = useState<User | null>(null);
   let location = useLocation();
 
   useEffect(() => {
-    setUserState({
-      user: supabase.auth.session(),
+    let unsubscibe: Unsubscribe = onAuthStateChanged(auth, (user: User) => {
+      if (user) {
+        setUser(user);
+      } else {
+        setUser(null);
+      }
     });
 
-    let authSubscription = supabase.auth.onAuthStateChange(
-      (_event: AuthChangeEvent, session: Session): void => {
-        setUserState({
-          user: session,
-        });
-      }
-    );
-
-    return (): void => {
-      authSubscription.data.unsubscribe();
-    };
+    return unsubscibe;
   }, []);
 
   return (
-    <UserContext.Provider value={{ user: userState, setUser: setUserState }}>
+    <UserContext.Provider value={user}>
       <UserContext.Consumer>
         {(): JSX.Element => {
           return (
